@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
@@ -22,6 +23,8 @@ namespace TpmRcDecoder.Universal
     /// </summary>
     public sealed partial class MainPage : Page
     {
+        private bool m_IgnoreNextChange = false;
+
         public MainPage()
         {
             this.InitializeComponent();
@@ -31,6 +34,61 @@ namespace TpmRcDecoder.Universal
         {
             Decoder decoder = new Decoder();
             Output.Text = decoder.Decode(Input.Text);
+        }
+
+        private void Input_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            if (m_IgnoreNextChange)
+            {
+                m_IgnoreNextChange = false;
+                return;
+            }
+
+            string inStr = Input.Text;
+            if (inStr.Trim().StartsWith("0x", StringComparison.CurrentCultureIgnoreCase))
+            {
+                inStr = inStr.Trim().Substring(2);
+            }
+            UInt32 input = 0;
+            try
+            {
+                input = UInt32.Parse(inStr, NumberStyles.HexNumber);
+            }
+            catch (FormatException)
+            { }
+
+            m_IgnoreNextChange = true;
+            InputDec.Text = string.Format("{0}", input);
+        }
+
+        private void InputDec_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            if (m_IgnoreNextChange)
+            {
+                m_IgnoreNextChange = false;
+                return;
+            }
+
+            UInt32 input = 0;
+            try
+            {
+                input = UInt32.Parse(InputDec.Text.Trim(), NumberStyles.Integer);
+            }
+            catch (FormatException)
+            { }
+
+            m_IgnoreNextChange = true;
+            Input.Text = string.Format("{0:x}", input);
+        }
+
+        private void MainPage_KeyDown(object sender, KeyRoutedEventArgs e)
+        {
+            switch (e.Key)
+            {
+                case Windows.System.VirtualKey.Enter:
+                    Decode_Click(sender, e);
+                    break;
+            }
         }
     }
 }

@@ -5,6 +5,7 @@
     xmlns:local="using:TpmRcDecoder.Universal"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    KeyDown="MainPage_KeyDown"
     mc:Ignorable="d">
 
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
@@ -21,12 +22,14 @@
 
         <!-- Title Panel -->
         <StackPanel Grid.Row="0" Margin="19,0,0,0">
-            <TextBlock Text="TPM 2.0 Return Code Decoder" Style="{ThemeResource TitleTextBlockStyle}" Margin="0,12,0,0"/>
+            <TextBlock Text="TPM Return Code Decoder" Style="{ThemeResource TitleTextBlockStyle}" Margin="0,12,0,0"/>
         </StackPanel>
 
         <StackPanel Grid.Row="1" >
             <Grid x:Name="ContentRoot" Margin="0,0,0,0">
                 <Grid.ColumnDefinitions>
+                    <ColumnDefinition />
+                    <ColumnDefinition Width="Auto" />
                     <ColumnDefinition />
                     <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
@@ -37,11 +40,13 @@
                     <RowDefinition Height="250" />
                 </Grid.RowDefinitions>
 
-                <TextBlock Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" HorizontalAlignment="Left" Margin="20,10,0,10" TextWrapping="Wrap" Text="Input TPM return code (in hexadecimal)" Style="{StaticResource BodyTextBlockStyle}" VerticalAlignment="Top" />
-                <TextBox Grid.Row="1" Grid.Column="0" x:Name="Input" Margin="20,10" Text="" TextAlignment="Right" VerticalAlignment="Stretch" PlaceholderText="Input error code here" IsTextPredictionEnabled="False" AllowDrop="True" />
-                <Button Grid.Row="1" Grid.Column="1" x:Name="Decode" Margin="20,10" Style="{StaticResource TextBlockButtonStyle}" Content="Decode" Width="150" Height="30" Click="Decode_Click" VerticalAlignment="Center" HorizontalContentAlignment="Center"/>
-                <TextBlock Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" HorizontalAlignment="Left" Margin="20,10,0,10" TextWrapping="Wrap" Text="Decoded return code" Style="{StaticResource BodyTextBlockStyle}" VerticalAlignment="Top"/>
-                <TextBox Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2" x:Name="Output" Margin="20,10" TextWrapping="Wrap" Text="Error description" VerticalAlignment="Stretch" IsReadOnly="True"/>
+                <TextBlock Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="4" HorizontalAlignment="Left" Margin="20,10,0,10" TextWrapping="Wrap" Text="Input TPM return code (decimal or hexadecimal)" Style="{StaticResource BodyTextBlockStyle}" VerticalAlignment="Top" />
+                <TextBox Grid.Row="1" Grid.Column="0" x:Name="InputDec" Margin="20,10" Text="" TextAlignment="Right" VerticalAlignment="Stretch" PlaceholderText="Input decimal error code here" IsTextPredictionEnabled="False" AllowDrop="True" TextChanged="InputDec_TextChanged" />
+                <TextBlock Grid.Row="1" Grid.Column="1" Margin="20,10,0,10" TextAlignment="Right" VerticalAlignment="Center" Text=" or 0x"  AllowDrop="True"  Style="{StaticResource BodyTextBlockStyle}" />
+                <TextBox Grid.Row="1" Grid.Column="2" x:Name="Input" Margin="10,10,20,10" Text="" TextAlignment="Right" VerticalAlignment="Stretch" PlaceholderText="Input hexadecimal error code here" IsTextPredictionEnabled="False" AllowDrop="True" TextChanged="Input_TextChanged"/>
+                <Button Grid.Row="1" Grid.Column="3" x:Name="Decode" Margin="20,10" Style="{StaticResource TextBlockButtonStyle}" Content="Decode" Width="150" Height="30" Click="Decode_Click" VerticalAlignment="Center" HorizontalContentAlignment="Center"/>
+                <TextBlock Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="4" HorizontalAlignment="Left" Margin="20,10,0,10" TextWrapping="Wrap" Text="Decoded return code" Style="{StaticResource BodyTextBlockStyle}" VerticalAlignment="Top"/>
+                <TextBox Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="4" x:Name="Output" Margin="20,10" TextWrapping="Wrap" Text="Error description" VerticalAlignment="Stretch" IsReadOnly="True"/>
             </Grid>
         </StackPanel>
     </Grid>
