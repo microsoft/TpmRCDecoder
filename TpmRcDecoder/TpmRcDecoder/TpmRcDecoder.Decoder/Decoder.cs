@@ -295,17 +295,36 @@ namespace TpmRcDecoder
             TPM_RC_NOT_USED = 0x7F, //	this value is reserved and shall not be returned by the TPM
         };
 
+        enum TPM_12_RC_NON_FATAL
+        {
+            TPM_RETRY = 0x000, // The TPM is too busy to respond to the command immediately, but the command could be resubmitted at a later time.
+            TPM_NEEDS_SELFTEST = 0x001, // TPM_ContinueSelfTest has not been run.
+            TPM_DOING_SELFTEST = 0x002, // The TPM is currently executing the actions of TPM_ContinueSelfTest because the ordinal required resources that have not been tested.
+            TPM_DEFEND_LOCK_RUNNING = 0x003, // The TPM is defending against dictionary attacks and is in some time-out period.
+        };
+
         private string DecodeWarning(UInt32 input)
         {
             UInt32 warning = input & TPM_RC_ERROR_MASK;
 
-            string output = "TPM Warning:\n";
-            output += " Warning: ";
-            string enumName = Enum.GetName(typeof(TPM_RC_WARN_CODES), warning);
-            if (string.IsNullOrEmpty(enumName))
-                output += "Unknown code.";
-            else
-                output += enumName;
+            string output = "TPM Warning:";
+
+            string warn20 = Enum.GetName(typeof(TPM_RC_WARN_CODES), warning);
+            string warn12 = Enum.GetName(typeof(TPM_12_RC_NON_FATAL), warning);
+
+            if (!string.IsNullOrEmpty(warn20))
+            {
+                output += "\n Warning (2.0): " + warn20;
+            }
+            if (!string.IsNullOrEmpty(warn12))
+            {
+                output += "\n Warning (1.2): " + warn12;
+            }
+            if (string.IsNullOrEmpty(warn20) &&
+                string.IsNullOrEmpty(warn12))
+            {
+                output += "\n Unknown warning.";
+            }
 
             return output;
         }
@@ -363,12 +382,130 @@ namespace TpmRcDecoder
             RC_MAX_FM0 = 0x07F,             // largest format 0 code that is not a warning
         };
 
+        enum TPM_12_ERROR_CODES
+        {
+            TPM_AUTHFAIL = 1, // Authentication failed
+            TPM_BADINDEX = 2, // The index to a PCR, DIR or other register is incorrect
+            TPM_BAD_PARAMETER = 3, // One or more parameter is bad
+            TPM_AUDITFAILURE = 4, // An operation completed successfully but the auditing of that operation failed. 
+            TPM_CLEAR_DISABLED = 5, // The clear disable flag is set and all clear operations now require physical access
+            TPM_DEACTIVATED = 6, // The TPM is deactivated
+            TPM_DISABLED = 7, // The TPM is disabled
+            TPM_DISABLED_CMD = 8, // The target command has been disabled
+            TPM_FAIL = 9, // The operation failed
+            TPM_BAD_ORDINAL = 10, // The ordinal was unknown or inconsistent
+            TPM_INSTALL_DISABLED = 11, // The ability to install an owner is disabled
+            TPM_INVALID_KEYHANDLE = 12, // The key handle can not be interpreted
+            TPM_KEYNOTFOUND = 13, // The key handle points to an invalid key
+            TPM_INAPPROPRIATE_ENC = 14, // Unacceptable encryption scheme
+            TPM_MIGRATEFAIL = 15, // Migration authorization failed
+            TPM_INVALID_PCR_INFO = 16, // PCR information could not be interpreted
+            TPM_NOSPACE = 17, // No room to load key. 
+            TPM_NOSRK = 18, // There is no SRK set.  This is an appropriate response when an unowned TPM receives a command that requires a TPM owner. 
+            TPM_NOTSEALED_BLOB = 19, // An encrypted blob is invalid or was not created by this TPM
+            TPM_OWNER_SET = 20, // There is already an Owner
+            TPM_RESOURCES = 21, // The TPM has insufficient internal resources to perform the requested action.
+            TPM_SHORTRANDOM = 22, // A random string was too short
+            TPM_SIZE = 23, // The TPM does not have the space to perform the operation.
+            TPM_WRONGPCRVAL = 24, // The named PCR value does not match the current PCR value.
+            TPM_BAD_PARAM_SIZE = 25, // The paramSize argument to the command has the incorrect value
+            TPM_SHA_THREAD = 26, // There is no existing SHA-1 thread.
+            TPM_SHA_ERROR = 27, // The calculation is unable to proceed because the existing SHA-1 thread has already encountered an error. 
+            TPM_FAILEDSELFTEST = 28, // Self-test has failed and the TPM has shutdown. 
+            TPM_AUTH2FAIL = 29, // The authorization for the second key in a 2 key function failed authorization
+            TPM_BADTAG = 30, // The tag value sent to for a command is invalid
+            TPM_IOERROR = 31, // An IO error occurred transmitting information to the TPM
+            TPM_ENCRYPT_ERROR = 32, // The encryption process had a problem. 
+            TPM_DECRYPT_ERROR = 33, // The decryption process did not complete. 
+            TPM_INVALID_AUTHHANDLE = 34, // An invalid handle was used.
+            TPM_NO_ENDORSEMENT = 35, // The TPM does not have a EK installed
+            TPM_INVALID_KEYUSAGE = 36, // The usage of a key is not allowed
+            TPM_WRONG_ENTITYTYPE = 37, // The submitted entity type is not allowed
+            TPM_INVALID_POSTINIT = 38, // The command was received in the wrong sequence relative to TPM_Init and a subsequent TPM_Startup
+            TPM_INAPPROPRIATE_SIG = 39, // Signed data cannot include additional DER information
+            TPM_BAD_KEY_PROPERTY = 40, // The key properties in TPM_KEY_PARMs are not supported by this TPM
+            TPM_BAD_MIGRATION = 41, // The migration properties of this key are incorrect.
+            TPM_BAD_SCHEME = 42, // The signature or encryption scheme for this key is incorrect or not permitted in this situation.
+            TPM_BAD_DATASIZE = 43, // The size of the data (or blob) parameter is bad or inconsistent with the referenced key
+            TPM_BAD_MODE = 44, // A parameter is bad, such as capArea or subCapArea for TPM_GetCapability, physicalPresence parameter for TPM_PhysicalPresence, or migrationType for TPM_CreateMigrationBlob.
+            TPM_BAD_PRESENCE = 45, // Either the physicalPresence or physicalPresenceLock bits have the wrong value
+            TPM_BAD_VERSION = 46, // The TPM cannot perform this version of the capability
+            TPM_NO_WRAP_TRANSPORT = 47, // The TPM does not allow for wrapped transport sessions
+            TPM_AUDITFAIL_UNSUCCESSFUL = 48, // TPM audit construction failed and the underlying command was returning a failure code also
+            TPM_AUDITFAIL_SUCCESSFUL = 49, // TPM audit construction failed and the underlying command was returning success
+            TPM_NOTRESETABLE = 50, // Attempt to reset a PCR register that does not have the resettable attribute
+            TPM_NOTLOCAL = 51, // Attempt to reset a PCR register that requires locality and locality modifier not part of command transport
+            TPM_BAD_TYPE = 52, // Make identity blob not properly typed
+            TPM_INVALID_RESOURCE = 53, // When saving context identified resource type does not match actual resource
+            TPM_NOTFIPS = 54, // The TPM is attempting to execute a command only available when in FIPS mode
+            TPM_INVALID_FAMILY = 55, // The command is attempting to use an invalid family ID
+            TPM_NO_NV_PERMISSION = 56, // The permission to manipulate the NV storage is not available
+            TPM_REQUIRES_SIGN = 57, // The operation requires a signed command
+            TPM_KEY_NOTSUPPORTED = 58, // Wrong operation to load an NV key
+            TPM_AUTH_CONFLICT = 59, // NV_LoadKey blob requires both owner and blob authorization
+            TPM_AREA_LOCKED = 60, // The NV area is locked and not writable
+            TPM_BAD_LOCALITY = 61, // The locality is incorrect for the attempted operation
+            TPM_READ_ONLY = 62, // The NV area is read only and can’t be written to
+            TPM_PER_NOWRITE = 63, // There is no protection on the write to the NV area
+            TPM_FAMILYCOUNT = 64, // The family count value does not match
+            TPM_WRITE_LOCKED = 65, // The NV area has already been written to
+            TPM_BAD_ATTRIBUTES = 66, // The NV area attributes conflict
+            TPM_INVALID_STRUCTURE = 67, // The structure tag and version are invalid or inconsistent
+            TPM_KEY_OWNER_CONTROL = 68, // The key is under control of the TPM Owner and can only be evicted by the TPM Owner.
+            TPM_BAD_COUNTER = 69, // The counter handle is incorrect
+            TPM_NOT_FULLWRITE = 70, // The write is not a complete write of the area
+            TPM_CONTEXT_GAP = 71, // The gap between saved context counts is too large
+            TPM_MAXNVWRITES = 72, // The maximum number of NV writes without an owner has been exceeded
+            TPM_NOOPERATOR = 73, // No operator AuthData value is set
+            TPM_RESOURCEMISSING = 74, // The resource pointed to by context is not loaded
+            TPM_DELEGATE_LOCK = 75, // The delegate administration is locked
+            TPM_DELEGATE_FAMILY = 76, // Attempt to manage a family other then the delegated family
+            TPM_DELEGATE_ADMIN = 77, // Delegation table management not enabled
+            TPM_TRANSPORT_NOTEXCLUSIVE = 78, // There was a command executed outside of an exclusive transport session
+            TPM_OWNER_CONTROL = 79, // Attempt to context save a owner evict controlled key
+            TPM_DAA_RESOURCES = 80, // The DAA command has no resources available to execute the command
+            TPM_DAA_INPUT_DATA0 = 81, // The consistency check on DAA parameter inputData0 has failed.
+            TPM_DAA_INPUT_DATA1 = 82, // The consistency check on DAA parameter inputData1 has failed.
+            TPM_DAA_ISSUER_SETTINGS = 83, // The consistency check on DAA_issuerSettings has failed.
+            TPM_DAA_TPM_SETTINGS = 84, // The consistency check on DAA_tpmSpecific has failed.
+            TPM_DAA_STAGE = 85, // The atomic process indicated by the submitted DAA command is not the expected process. 
+            TPM_DAA_ISSUER_VALIDITY = 86, // The issuer’s validity check has detected an inconsistency
+            TPM_DAA_WRONG_W = 87, // The consistency check on w has failed.
+            TPM_BAD_HANDLE = 88, // The handle is incorrect
+            TPM_BAD_DELEGATE = 89, // Delegation is not correct
+            TPM_BADCONTEXT = 90, // The context blob is invalid
+            TPM_TOOMANYCONTEXTS = 91, // Too many contexts held by the TPM
+            TPM_MA_TICKET_SIGNATURE = 92, // Migration authority signature validation failure
+            TPM_MA_DESTINATION = 93, // Migration destination not authenticated
+            TPM_MA_SOURCE = 94, // Migration source incorrect
+            TPM_MA_AUTHORITY = 95, // Incorrect migration authority
+            TPM_PERMANENTEK = 97, // Attempt to revoke the EK and the EK is not revocable
+            TPM_BAD_SIGNATURE = 98, // Bad signature of CMK ticket
+            TPM_NOCONTEXTSPACE = 99, // There is no room in the context list for additional contexts
+        };
+
         private string DecodeError(UInt32 input)
         {
             UInt32 error = input & TPM_RC_ERROR_MASK;
 
-            string output = "TPM Error:\n";
-            output += " Error: " + Enum.GetName(typeof(TPM_RC_VER1_CODES), error);
+            string output = "TPM Error:";
+
+            string error20 = Enum.GetName(typeof(TPM_RC_VER1_CODES), error);
+            string error12 = Enum.GetName(typeof(TPM_12_ERROR_CODES), error);
+
+            if (!string.IsNullOrEmpty(error20))
+            {
+                output += "\n Error (2.0): " + error20;
+            }
+            if (!string.IsNullOrEmpty(error12))
+            {
+                output += "\n Error (1.2): " + error12;
+            }
+            if (string.IsNullOrEmpty(error20) &&
+                string.IsNullOrEmpty(error12))
+            {
+                output += "\n Unknown error.";
+            }
 
             return output;
         }
