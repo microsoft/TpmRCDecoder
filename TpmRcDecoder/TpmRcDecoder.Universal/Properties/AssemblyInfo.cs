@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("TpmRcDecoder.Universal")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyTitle("TpmRcDecoder")]
+[assembly: AssemblyDescription("TPM Return Code Decoder")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("TpmRcDecoder.Universal")]
+[assembly: AssemblyCompany("Microsoft Research")]
+[assembly: AssemblyProduct("TpmRcDecoder")]
 [assembly: AssemblyCopyright("Copyright ©  2016")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
