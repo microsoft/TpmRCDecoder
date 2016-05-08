@@ -96,6 +96,7 @@ namespace TpmRcDecoder.Universal
                 Window.Current.Activate();
             }
 
+            /* no voice controls for now
             // The app must install its command sets at least once. Doing this in OnLaunched 
             // causes it to happen as infrequently as possible. 
             try
@@ -108,6 +109,7 @@ namespace TpmRcDecoder.Universal
             {
                 System.Diagnostics.Debug.WriteLine("Installing Voice Commands Failed: " + ex.ToString());
             }
+            */
 
             // dynamically update phrase list will all possible TPM error codes
             /*

@@ -264,6 +264,43 @@ namespace TpmRcDecoder
             TPM_RC_ECC_POINT = 0x27, // point is not on the required curve.
         };
 
+        private static readonly Dictionary<TPM_RC_FMT_CODES, string> TPM_RC_FMT_CODE_DESCRIPTION = new Dictionary<TPM_RC_FMT_CODES, string>
+        {
+            { TPM_RC_FMT_CODES.TPM_RC_ASYMMETRIC, "asymmetric algorithm not supported or not correct" },
+            { TPM_RC_FMT_CODES.TPM_RC_ATTRIBUTES, "inconsistent attributes" },
+            { TPM_RC_FMT_CODES.TPM_RC_HASH, "hash algorithm not supported or not appropriate " },
+            { TPM_RC_FMT_CODES.TPM_RC_VALUE, "value is out of range or is not correct for the context" },
+            { TPM_RC_FMT_CODES.TPM_RC_HIERARCHY, "hierarchy is not enabled or is not correct for the use" },
+            { TPM_RC_FMT_CODES.TPM_RC_KEY_SIZE, "key size is not supported" },
+            { TPM_RC_FMT_CODES.TPM_RC_MGF, "mask generation function not supported" },
+            { TPM_RC_FMT_CODES.TPM_RC_MODE, "mode of operation not supported" },
+            { TPM_RC_FMT_CODES.TPM_RC_TYPE, "the type of the value is not appropriate for the use" },
+            { TPM_RC_FMT_CODES.TPM_RC_HANDLE, "the handle is not correct for the use" },
+            { TPM_RC_FMT_CODES.TPM_RC_KDF, "unsupported key derivation function or function not appropriate for use" },
+            { TPM_RC_FMT_CODES.TPM_RC_RANGE, "value was out of allowed range." },
+            { TPM_RC_FMT_CODES.TPM_RC_AUTH_FAIL, "the authorization HMAC check failed and DA counter incremented " },
+            { TPM_RC_FMT_CODES.TPM_RC_NONCE, "invalid nonce size" },
+            { TPM_RC_FMT_CODES.TPM_RC_PP, "authorization requires assertion of PP" },
+            { TPM_RC_FMT_CODES.TPM_RC_SCHEME, "unsupported or incompatible scheme" },
+            { TPM_RC_FMT_CODES.TPM_RC_SIZE, "structure is the wrong size" },
+            { TPM_RC_FMT_CODES.TPM_RC_SYMMETRIC, "unsupported symmetric algorithm or key size, or not appropriate for instance" },
+            { TPM_RC_FMT_CODES.TPM_RC_TAG, "incorrect structure tag" },
+            { TPM_RC_FMT_CODES.TPM_RC_SELECTOR, "union selector is incorrect" },
+            { TPM_RC_FMT_CODES.TPM_RC_INSUFFICIENT, "the TPM was unable to unmarshal a value because there were not enough bytes in the input buffer " },
+            { TPM_RC_FMT_CODES.TPM_RC_SIGNATURE, "the signature is not valid" },
+            { TPM_RC_FMT_CODES.TPM_RC_KEY, "key fields are not compatible with each other" },
+            { TPM_RC_FMT_CODES.TPM_RC_POLICY_FAIL, "a policy check failed" },
+            { TPM_RC_FMT_CODES.TPM_RC_INTEGRITY, "integrity check failed " },
+            { TPM_RC_FMT_CODES.TPM_RC_TICKET, "invalid ticket " },
+            { TPM_RC_FMT_CODES.TPM_RC_RESERVED_BITS, "reserved bits not set to zero as required" },
+            { TPM_RC_FMT_CODES.TPM_RC_BAD_AUTH, "authorization failure without DA implications" },
+            { TPM_RC_FMT_CODES.TPM_RC_EXPIRED, "the policy has expired" },
+            { TPM_RC_FMT_CODES.TPM_RC_POLICY_CC, "the commandCode in the policy is not the commandCode of the command" },
+            { TPM_RC_FMT_CODES.TPM_RC_BINDING, "" },
+            { TPM_RC_FMT_CODES.TPM_RC_CURVE, "curve not supported" },
+            { TPM_RC_FMT_CODES.TPM_RC_ECC_POINT, "point is not on the required curve." },
+        };
+
         private string DecodeFormatError(UInt32 input)
         {
             UInt32 param = (input >> TPM_RC_FMT_PARAM_SHIFT) & TPM_RC_FMT_PARAM_MASK;
@@ -287,6 +324,11 @@ namespace TpmRcDecoder
             }
 
             output += " Error: " + Enum.GetName(typeof(TPM_RC_FMT_CODES), input & TPM_RC_FMT_ERROR_MASK);
+            string description;
+            if (TPM_RC_WARN_CODE_DESCRIPTION.TryGetValue((TPM_RC_WARN_CODES)input, out description))
+            {
+                output += "\n  Description: " + description;
+            }
 
             return output;
         }
@@ -324,12 +366,53 @@ namespace TpmRcDecoder
             TPM_RC_NOT_USED = 0x7F, //	this value is reserved and shall not be returned by the TPM
         };
 
+        private static readonly Dictionary<TPM_RC_WARN_CODES, string> TPM_RC_WARN_CODE_DESCRIPTION = new Dictionary<TPM_RC_WARN_CODES, string>
+        {
+            { TPM_RC_WARN_CODES.TPM_RC_CONTEXT_GAP, "gap for context ID is too large" },
+            { TPM_RC_WARN_CODES.TPM_RC_OBJECT_MEMORY, "out of memory for object contexts" },
+            { TPM_RC_WARN_CODES.TPM_RC_SESSION_MEMORY, "out of memory for session contexts" },
+            { TPM_RC_WARN_CODES.TPM_RC_MEMORY, "out of shared object/session memory or need space for internal operations" },
+            { TPM_RC_WARN_CODES.TPM_RC_SESSION_HANDLES, "out of session handles – a session must be flushed before a new session may be created" },
+            { TPM_RC_WARN_CODES.TPM_RC_OBJECT_HANDLES, "out of object handles – the handle space for objects is depleted and a reboot is required. NOTE	This cannot occur on the reference implementation." },
+            { TPM_RC_WARN_CODES.TPM_RC_LOCALITY, "bad locality" },
+            { TPM_RC_WARN_CODES.TPM_RC_YIELDED, "the TPM has suspended operation on the command; forward progress was made and the command may be retried. See Part 1, “Multi-tasking.” NOTE	This cannot occur on the reference implementation." },
+            { TPM_RC_WARN_CODES.TPM_RC_CANCELLED, "the command was canceled" },
+            { TPM_RC_WARN_CODES.TPM_RC_TESTING, "TPM is performing self-tests" },
+            { TPM_RC_WARN_CODES.TPM_RC_REFERENCE_H0, "the 1st handle in the handle area references a transient object or session that is not loaded" },
+            { TPM_RC_WARN_CODES.TPM_RC_REFERENCE_H1, "the 2nd handle in the handle area references a transient object or session that is not loaded" },
+            { TPM_RC_WARN_CODES.TPM_RC_REFERENCE_H2, "the 3rd handle in the handle area references a transient object or session that is not loaded" },
+            { TPM_RC_WARN_CODES.TPM_RC_REFERENCE_H3, "the 4th handle in the handle area references a transient object or session that is not loaded" },
+            { TPM_RC_WARN_CODES.TPM_RC_REFERENCE_H4, "the 5th handle in the handle area references a transient object or session that is not loaded" },
+            { TPM_RC_WARN_CODES.TPM_RC_REFERENCE_H5, "the 6th handle in the handle area references a transient object or session that is not loaded" },
+            { TPM_RC_WARN_CODES.TPM_RC_REFERENCE_H6, "the 7th handle in the handle area references a transient object or session that is not loaded" },
+            { TPM_RC_WARN_CODES.TPM_RC_REFERENCE_S0, "the 1st authorization session handle references a session that is not loaded" },
+            { TPM_RC_WARN_CODES.TPM_RC_REFERENCE_S1, "the 2nd authorization session handle references a session that is not loaded" },
+            { TPM_RC_WARN_CODES.TPM_RC_REFERENCE_S2, "the 3rd authorization session handle references a session that is not loaded" },
+            { TPM_RC_WARN_CODES.TPM_RC_REFERENCE_S3, "the 4th authorization session handle references a session that is not loaded" },
+            { TPM_RC_WARN_CODES.TPM_RC_REFERENCE_S4, "the 5th session handle references a session that is not loaded" },
+            { TPM_RC_WARN_CODES.TPM_RC_REFERENCE_S5, "the 6th session handle references a session that is not loaded" },
+            { TPM_RC_WARN_CODES.TPM_RC_REFERENCE_S6, "the 7th authorization session handle references a session that is not loaded" },
+            { TPM_RC_WARN_CODES.TPM_RC_NV_RATE, "the TPM is rate-limiting accesses to prevent wearout of NV" },
+            { TPM_RC_WARN_CODES.TPM_RC_LOCKOUT, "authorizations for objects subject to DA protection are not allowed at this time because the TPM is in DA lockout mode" },
+            { TPM_RC_WARN_CODES.TPM_RC_RETRY, "the TPM was not able to start the command" },
+            { TPM_RC_WARN_CODES.TPM_RC_NV_UNAVAILABLE, "the command may require writing of NV and NV is not current accessible" },
+            { TPM_RC_WARN_CODES.TPM_RC_NOT_USED, "this value is reserved and shall not be returned by the TPM" },
+        };
+
         enum TPM_12_RC_NON_FATAL
         {
             TPM_RETRY = 0x000, // The TPM is too busy to respond to the command immediately, but the command could be resubmitted at a later time.
             TPM_NEEDS_SELFTEST = 0x001, // TPM_ContinueSelfTest has not been run.
             TPM_DOING_SELFTEST = 0x002, // The TPM is currently executing the actions of TPM_ContinueSelfTest because the ordinal required resources that have not been tested.
             TPM_DEFEND_LOCK_RUNNING = 0x003, // The TPM is defending against dictionary attacks and is in some time-out period.
+        };
+
+        private static readonly Dictionary<TPM_12_RC_NON_FATAL, string> TPM_12_RC_NON_FATAL_DESCRIPTION = new Dictionary<TPM_12_RC_NON_FATAL, string>
+        {
+            { TPM_12_RC_NON_FATAL.TPM_RETRY, "The TPM is too busy to respond to the command immediately, but the command could be resubmitted at a later time." },
+            { TPM_12_RC_NON_FATAL.TPM_NEEDS_SELFTEST, "TPM_ContinueSelfTest has not been run." },
+            { TPM_12_RC_NON_FATAL.TPM_DOING_SELFTEST, "The TPM is currently executing the actions of TPM_ContinueSelfTest because the ordinal required resources that have not been tested." },
+            { TPM_12_RC_NON_FATAL.TPM_DEFEND_LOCK_RUNNING, "The TPM is defending against dictionary attacks and is in some time-out period." },
         };
 
         private string DecodeWarning(UInt32 input)
@@ -344,10 +427,20 @@ namespace TpmRcDecoder
             if (!string.IsNullOrEmpty(warn20))
             {
                 output += "\n Warning (2.0): " + warn20;
+                string description;
+                if (TPM_RC_WARN_CODE_DESCRIPTION.TryGetValue((TPM_RC_WARN_CODES)input, out description))
+                {
+                    output += "\n  Description: " + description;
+                }
             }
             if (!string.IsNullOrEmpty(warn12))
             {
                 output += "\n Warning (1.2): " + warn12;
+                string description;
+                if (TPM_12_RC_NON_FATAL_DESCRIPTION.TryGetValue((TPM_12_RC_NON_FATAL)input, out description))
+                {
+                    output += "\n  Description: " + description;
+                }
             }
             if (string.IsNullOrEmpty(warn20) &&
                 string.IsNullOrEmpty(warn12))
@@ -411,7 +504,48 @@ namespace TpmRcDecoder
             RC_MAX_FM0 = 0x07F,             // largest format 0 code that is not a warning
         };
 
-        enum TPM_12_ERROR_CODES
+        private static readonly Dictionary<TPM_RC_VER1_CODES, string> TPM_RC_VER1_CODE_DESCRIPTION = new Dictionary<TPM_RC_VER1_CODES, string>
+        {
+            { TPM_RC_VER1_CODES.TPM_RC_INITIALIZE, "TPM not initialized" },
+            { TPM_RC_VER1_CODES.TPM_RC_FAILURE, "commands not being accepted because of a TPM failure NOTE This may be returned by TPM2_GetTestResult() as the testResult parameter." },
+            { TPM_RC_VER1_CODES.TPM_RC_SEQUENCE, "improper use of a sequence handle" },
+            { TPM_RC_VER1_CODES.TPM_RC_PRIVATE, "" },
+            { TPM_RC_VER1_CODES.TPM_RC_HMAC, "" },
+            { TPM_RC_VER1_CODES.TPM_RC_DISABLED, "" },
+            { TPM_RC_VER1_CODES.TPM_RC_EXCLUSIVE, "command failed because audit sequence required exclusivity" },
+            { TPM_RC_VER1_CODES.TPM_RC_ECC_CURVE, "unsupported curve" },
+            { TPM_RC_VER1_CODES.TPM_RC_AUTH_TYPE, "authorization handle is not correct for command" },
+            { TPM_RC_VER1_CODES.TPM_RC_AUTH_MISSING, "command requires an authorization session for handle and it is not present." },
+            { TPM_RC_VER1_CODES.TPM_RC_POLICY, "policy Failure In Math Operation or an invalid authPolicy value" },
+            { TPM_RC_VER1_CODES.TPM_RC_PCR, "PCR check fail" },
+            { TPM_RC_VER1_CODES.TPM_RC_PCR_CHANGED, "PCR have changed since checked." },
+            { TPM_RC_VER1_CODES.TPM_RC_ECC_POINT, "point is not on the required curve." },
+            { TPM_RC_VER1_CODES.TPM_RC_UPGRADE, "for all commands other than TPM2_FieldUpgradeData(), this code indicates that the TPM is in field upgrade mode; for TPM2_FieldUpgradeData(), this code indicates that the TPM is not in field upgrade mode" },
+            { TPM_RC_VER1_CODES.TPM_RC_TOO_MANY_CONTEXTS, "context ID counter is at maximum." },
+            { TPM_RC_VER1_CODES.TPM_RC_AUTH_UNAVAILABLE, "authValue or authPolicy is not available for selected entity." },
+            { TPM_RC_VER1_CODES.TPM_RC_REBOOT, "a _TPM_Init and Startup(CLEAR) is required before the TPM can resume operation." },
+            { TPM_RC_VER1_CODES.TPM_RC_UNBALANCED, "the protection algorithms (hash and symmetric) are not reasonably balanced. The digest size of the hash must be larger than the key size of the symmetric algorithm." },
+            { TPM_RC_VER1_CODES.TPM_RC_COMMAND_SIZE, "command commandSize value is inconsistent with contents of the command buffer; either the size is not the same as the bytes loaded by the hardware interface layer or the value is not large enough to hold a command header" },
+            { TPM_RC_VER1_CODES.TPM_RC_COMMAND_CODE, "command code not supported" },
+            { TPM_RC_VER1_CODES.TPM_RC_AUTHSIZE, "the value of authorzationSize is out of range or the number of bytes in the authorization area is greater than required" },
+            { TPM_RC_VER1_CODES.TPM_RC_AUTH_CONTEXT, "use of an authorization session with a context command" },
+            { TPM_RC_VER1_CODES.TPM_RC_NV_RANGE, "NV offset+size is out of range." },
+            { TPM_RC_VER1_CODES.TPM_RC_NV_SIZE, "Requested allocation size is larger than allowed." },
+            { TPM_RC_VER1_CODES.TPM_RC_NV_LOCKED, "NV access locked." },
+            { TPM_RC_VER1_CODES.TPM_RC_NV_AUTHORIZATION, "NV access authorization fails in command actions (this failure does not affect lockout.action)" },
+            { TPM_RC_VER1_CODES.TPM_RC_NV_UNINITIALIZED, "an NV Index is used before being initialized or the state saved by TPM2_Shutdown(STATE) could not be restored" },
+            { TPM_RC_VER1_CODES.TPM_RC_NV_SPACE, "insufficient space for NV allocation" },
+            { TPM_RC_VER1_CODES.TPM_RC_NV_DEFINED, "nv index or persisted object already defined" },
+            { TPM_RC_VER1_CODES.TPM_RC_BAD_CONTEXT, "context in TPM2_ContextLoad() is not valid" },
+            { TPM_RC_VER1_CODES.TPM_RC_CPHASH, "cpHash value already set or not correct for use" },
+            { TPM_RC_VER1_CODES.TPM_RC_PARENT, "handle for parent is not a valid parent" },
+            { TPM_RC_VER1_CODES.TPM_RC_NEEDS_TEST, "some function needs testing." },
+            { TPM_RC_VER1_CODES.TPM_RC_NO_RESULT, "returned when an internal function cannot process a request due to an unspecified problem. This code is usually related to invalid parameters that are not properly filtered by the input unmarshaling code." },
+            { TPM_RC_VER1_CODES.TPM_RC_SENSITIVE, "the sensitive area did not unmarshal correctly after decryption – this code is used in lieu of the other unmarshaling errors so that an attacker cannot determine where the unmarshaling error occurred" },
+            { TPM_RC_VER1_CODES.RC_MAX_FM0, "largest format 0 code that is not a warning" },
+        };
+
+    enum TPM_12_ERROR_CODES
         {
             TPM_AUTHFAIL = 1, // Authentication failed
             TPM_BADINDEX = 2, // The index to a PCR, DIR or other register is incorrect
@@ -513,6 +647,108 @@ namespace TpmRcDecoder
             TPM_NOCONTEXTSPACE = 99, // There is no room in the context list for additional contexts
         };
 
+        private static readonly Dictionary<TPM_12_ERROR_CODES, string> TPM_12_ERROR_CODE_DESCRIPTION = new Dictionary<TPM_12_ERROR_CODES, string>
+        {
+            { TPM_12_ERROR_CODES.TPM_AUTHFAIL, "Authentication failed" },
+            { TPM_12_ERROR_CODES.TPM_BADINDEX, "The index to a PCR, DIR or other register is incorrect" },
+            { TPM_12_ERROR_CODES.TPM_BAD_PARAMETER, "One or more parameter is bad" },
+            { TPM_12_ERROR_CODES.TPM_AUDITFAILURE, "An operation completed successfully but the auditing of that operation failed. " },
+            { TPM_12_ERROR_CODES.TPM_CLEAR_DISABLED, "The clear disable flag is set and all clear operations now require physical access" },
+            { TPM_12_ERROR_CODES.TPM_DEACTIVATED, "The TPM is deactivated" },
+            { TPM_12_ERROR_CODES.TPM_DISABLED, "The TPM is disabled" },
+            { TPM_12_ERROR_CODES.TPM_DISABLED_CMD, "The target command has been disabled" },
+            { TPM_12_ERROR_CODES.TPM_FAIL, "The operation failed" },
+            { TPM_12_ERROR_CODES.TPM_BAD_ORDINAL, "The ordinal was unknown or inconsistent" },
+            { TPM_12_ERROR_CODES.TPM_INSTALL_DISABLED, "The ability to install an owner is disabled" },
+            { TPM_12_ERROR_CODES.TPM_INVALID_KEYHANDLE, "The key handle can not be interpreted" },
+            { TPM_12_ERROR_CODES.TPM_KEYNOTFOUND, "The key handle points to an invalid key" },
+            { TPM_12_ERROR_CODES.TPM_INAPPROPRIATE_ENC, "Unacceptable encryption scheme" },
+            { TPM_12_ERROR_CODES.TPM_MIGRATEFAIL, "Migration authorization failed" },
+            { TPM_12_ERROR_CODES.TPM_INVALID_PCR_INFO, "PCR information could not be interpreted" },
+            { TPM_12_ERROR_CODES.TPM_NOSPACE, "No room to load key. " },
+            { TPM_12_ERROR_CODES.TPM_NOSRK, "There is no SRK set.  This is an appropriate response when an unowned TPM receives a command that requires a TPM owner. " },
+            { TPM_12_ERROR_CODES.TPM_NOTSEALED_BLOB, "An encrypted blob is invalid or was not created by this TPM" },
+            { TPM_12_ERROR_CODES.TPM_OWNER_SET, "There is already an Owner" },
+            { TPM_12_ERROR_CODES.TPM_RESOURCES, "The TPM has insufficient internal resources to perform the requested action." },
+            { TPM_12_ERROR_CODES.TPM_SHORTRANDOM, "A random string was too short" },
+            { TPM_12_ERROR_CODES.TPM_SIZE, "The TPM does not have the space to perform the operation." },
+            { TPM_12_ERROR_CODES.TPM_WRONGPCRVAL, "The named PCR value does not match the current PCR value." },
+            { TPM_12_ERROR_CODES.TPM_BAD_PARAM_SIZE, "The paramSize argument to the command has the incorrect value" },
+            { TPM_12_ERROR_CODES.TPM_SHA_THREAD, "There is no existing SHA-1 thread." },
+            { TPM_12_ERROR_CODES.TPM_SHA_ERROR, "The calculation is unable to proceed because the existing SHA-1 thread has already encountered an error. " },
+            { TPM_12_ERROR_CODES.TPM_FAILEDSELFTEST, "Self-test has failed and the TPM has shutdown. " },
+            { TPM_12_ERROR_CODES.TPM_AUTH2FAIL, "The authorization for the second key in a 2 key function failed authorization" },
+            { TPM_12_ERROR_CODES.TPM_BADTAG, "The tag value sent to for a command is invalid" },
+            { TPM_12_ERROR_CODES.TPM_IOERROR, "An IO error occurred transmitting information to the TPM" },
+            { TPM_12_ERROR_CODES.TPM_ENCRYPT_ERROR, "The encryption process had a problem. " },
+            { TPM_12_ERROR_CODES.TPM_DECRYPT_ERROR, "The decryption process did not complete. " },
+            { TPM_12_ERROR_CODES.TPM_INVALID_AUTHHANDLE, "An invalid handle was used." },
+            { TPM_12_ERROR_CODES.TPM_NO_ENDORSEMENT, "The TPM does not have a EK installed" },
+            { TPM_12_ERROR_CODES.TPM_INVALID_KEYUSAGE, "The usage of a key is not allowed" },
+            { TPM_12_ERROR_CODES.TPM_WRONG_ENTITYTYPE, "The submitted entity type is not allowed" },
+            { TPM_12_ERROR_CODES.TPM_INVALID_POSTINIT, "The command was received in the wrong sequence relative to TPM_Init and a subsequent TPM_Startup" },
+            { TPM_12_ERROR_CODES.TPM_INAPPROPRIATE_SIG, "Signed data cannot include additional DER information" },
+            { TPM_12_ERROR_CODES.TPM_BAD_KEY_PROPERTY, "The key properties in TPM_KEY_PARMs are not supported by this TPM" },
+            { TPM_12_ERROR_CODES.TPM_BAD_MIGRATION, "The migration properties of this key are incorrect." },
+            { TPM_12_ERROR_CODES.TPM_BAD_SCHEME, "The signature or encryption scheme for this key is incorrect or not permitted in this situation." },
+            { TPM_12_ERROR_CODES.TPM_BAD_DATASIZE, "The size of the data (or blob) parameter is bad or inconsistent with the referenced key" },
+            { TPM_12_ERROR_CODES.TPM_BAD_MODE, "A parameter is bad, such as capArea or subCapArea for TPM_GetCapability, physicalPresence parameter for TPM_PhysicalPresence, or migrationType for { TPM_12_ERROR_CODES.TPM_CreateMigrationBlob." },
+            { TPM_12_ERROR_CODES.TPM_BAD_PRESENCE, "Either the physicalPresence or physicalPresenceLock bits have the wrong value" },
+            { TPM_12_ERROR_CODES.TPM_BAD_VERSION, "The TPM cannot perform this version of the capability" },
+            { TPM_12_ERROR_CODES.TPM_NO_WRAP_TRANSPORT, "The TPM does not allow for wrapped transport sessions" },
+            { TPM_12_ERROR_CODES.TPM_AUDITFAIL_UNSUCCESSFUL, "TPM audit construction failed and the underlying command was returning a failure code also" },
+            { TPM_12_ERROR_CODES.TPM_AUDITFAIL_SUCCESSFUL, "TPM audit construction failed and the underlying command was returning success" },
+            { TPM_12_ERROR_CODES.TPM_NOTRESETABLE, "Attempt to reset a PCR register that does not have the resettable attribute" },
+            { TPM_12_ERROR_CODES.TPM_NOTLOCAL, "Attempt to reset a PCR register that requires locality and locality modifier not part of command transport" },
+            { TPM_12_ERROR_CODES.TPM_BAD_TYPE, "Make identity blob not properly typed" },
+            { TPM_12_ERROR_CODES.TPM_INVALID_RESOURCE, "When saving context identified resource type does not match actual resource" },
+            { TPM_12_ERROR_CODES.TPM_NOTFIPS, "The TPM is attempting to execute a command only available when in FIPS mode" },
+            { TPM_12_ERROR_CODES.TPM_INVALID_FAMILY, "The command is attempting to use an invalid family ID" },
+            { TPM_12_ERROR_CODES.TPM_NO_NV_PERMISSION, "The permission to manipulate the NV storage is not available" },
+            { TPM_12_ERROR_CODES.TPM_REQUIRES_SIGN, "The operation requires a signed command" },
+            { TPM_12_ERROR_CODES.TPM_KEY_NOTSUPPORTED, "Wrong operation to load an NV key" },
+            { TPM_12_ERROR_CODES.TPM_AUTH_CONFLICT, "NV_LoadKey blob requires both owner and blob authorization" },
+            { TPM_12_ERROR_CODES.TPM_AREA_LOCKED, "The NV area is locked and not writable" },
+            { TPM_12_ERROR_CODES.TPM_BAD_LOCALITY, "The locality is incorrect for the attempted operation" },
+            { TPM_12_ERROR_CODES.TPM_READ_ONLY, "The NV area is read only and can’t be written to" },
+            { TPM_12_ERROR_CODES.TPM_PER_NOWRITE, "There is no protection on the write to the NV area" },
+            { TPM_12_ERROR_CODES.TPM_FAMILYCOUNT, "The family count value does not match" },
+            { TPM_12_ERROR_CODES.TPM_WRITE_LOCKED, "The NV area has already been written to" },
+            { TPM_12_ERROR_CODES.TPM_BAD_ATTRIBUTES, "The NV area attributes conflict" },
+            { TPM_12_ERROR_CODES.TPM_INVALID_STRUCTURE, "The structure tag and version are invalid or inconsistent" },
+            { TPM_12_ERROR_CODES.TPM_KEY_OWNER_CONTROL, "The key is under control of the TPM Owner and can only be evicted by the TPM Owner." },
+            { TPM_12_ERROR_CODES.TPM_BAD_COUNTER, "The counter handle is incorrect" },
+            { TPM_12_ERROR_CODES.TPM_NOT_FULLWRITE, "The write is not a complete write of the area" },
+            { TPM_12_ERROR_CODES.TPM_CONTEXT_GAP, "The gap between saved context counts is too large" },
+            { TPM_12_ERROR_CODES.TPM_MAXNVWRITES, "The maximum number of NV writes without an owner has been exceeded" },
+            { TPM_12_ERROR_CODES.TPM_NOOPERATOR, "No operator AuthData value is set" },
+            { TPM_12_ERROR_CODES.TPM_RESOURCEMISSING, "The resource pointed to by context is not loaded" },
+            { TPM_12_ERROR_CODES.TPM_DELEGATE_LOCK, "The delegate administration is locked" },
+            { TPM_12_ERROR_CODES.TPM_DELEGATE_FAMILY, "Attempt to manage a family other then the delegated family" },
+            { TPM_12_ERROR_CODES.TPM_DELEGATE_ADMIN, "Delegation table management not enabled" },
+            { TPM_12_ERROR_CODES.TPM_TRANSPORT_NOTEXCLUSIVE, "There was a command executed outside of an exclusive transport session" },
+            { TPM_12_ERROR_CODES.TPM_OWNER_CONTROL, "Attempt to context save a owner evict controlled key" },
+            { TPM_12_ERROR_CODES.TPM_DAA_RESOURCES, "The DAA command has no resources available to execute the command" },
+            { TPM_12_ERROR_CODES.TPM_DAA_INPUT_DATA0, "The consistency check on DAA parameter inputData0 has failed." },
+            { TPM_12_ERROR_CODES.TPM_DAA_INPUT_DATA1, "The consistency check on DAA parameter inputData1 has failed." },
+            { TPM_12_ERROR_CODES.TPM_DAA_ISSUER_SETTINGS, "The consistency check on DAA_issuerSettings has failed." },
+            { TPM_12_ERROR_CODES.TPM_DAA_TPM_SETTINGS, "The consistency check on DAA_tpmSpecific has failed." },
+            { TPM_12_ERROR_CODES.TPM_DAA_STAGE, "The atomic process indicated by the submitted DAA command is not the expected process. " },
+            { TPM_12_ERROR_CODES.TPM_DAA_ISSUER_VALIDITY, "The issuer’s validity check has detected an inconsistency" },
+            { TPM_12_ERROR_CODES.TPM_DAA_WRONG_W, "The consistency check on w has failed." },
+            { TPM_12_ERROR_CODES.TPM_BAD_HANDLE, "The handle is incorrect" },
+            { TPM_12_ERROR_CODES.TPM_BAD_DELEGATE, "Delegation is not correct" },
+            { TPM_12_ERROR_CODES.TPM_BADCONTEXT, "The context blob is invalid" },
+            { TPM_12_ERROR_CODES.TPM_TOOMANYCONTEXTS, "Too many contexts held by the TPM" },
+            { TPM_12_ERROR_CODES.TPM_MA_TICKET_SIGNATURE, "Migration authority signature validation failure" },
+            { TPM_12_ERROR_CODES.TPM_MA_DESTINATION, "Migration destination not authenticated" },
+            { TPM_12_ERROR_CODES.TPM_MA_SOURCE, "Migration source incorrect" },
+            { TPM_12_ERROR_CODES.TPM_MA_AUTHORITY, "Incorrect migration authority" },
+            { TPM_12_ERROR_CODES.TPM_PERMANENTEK, "Attempt to revoke the EK and the EK is not revocable" },
+            { TPM_12_ERROR_CODES.TPM_BAD_SIGNATURE, "Bad signature of CMK ticket" },
+            { TPM_12_ERROR_CODES.TPM_NOCONTEXTSPACE, "There is no room in the context list for additional contexts" },
+        };
+
         private string DecodeError(UInt32 input)
         {
             UInt32 error = input & TPM_RC_ERROR_MASK;
@@ -525,10 +761,20 @@ namespace TpmRcDecoder
             if (!string.IsNullOrEmpty(error20))
             {
                 output += "\n Error (2.0): " + error20;
+                string description;
+                if (TPM_RC_VER1_CODE_DESCRIPTION.TryGetValue((TPM_RC_VER1_CODES)error, out description))
+                {
+                    output += "\n  Description: " + description;
+                }
             }
             if (!string.IsNullOrEmpty(error12))
             {
                 output += "\n Error (1.2): " + error12;
+                string description;
+                if (TPM_12_ERROR_CODE_DESCRIPTION.TryGetValue((TPM_12_ERROR_CODES)error, out description))
+                {
+                    output += "\n  Description: " + description;
+                }
             }
             if (string.IsNullOrEmpty(error20) &&
                 string.IsNullOrEmpty(error12))
@@ -1101,6 +1347,7 @@ namespace TpmRcDecoder
             else
             { 
                 output += " " + name + "\n ";
+                // map the 0xC029xxxx error codes to the 0x8028xxxx error code - the description is the same
                 if ((input & (uint)TPM_WIN_ERROR.STATUS_TPM_ERROR_MASK) == (uint)TPM_WIN_ERROR.STATUS_TPM_ERROR_MASK)
                 {
                     input = (input ^ (uint)TPM_WIN_ERROR.STATUS_TPM_ERROR_MASK) | (uint)TPM_WIN_ERROR.TPM_E_ERROR_MASK;
