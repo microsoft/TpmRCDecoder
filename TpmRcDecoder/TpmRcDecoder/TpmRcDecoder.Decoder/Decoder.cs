@@ -31,13 +31,10 @@ namespace TpmRcDecoder
 
             // Windows error codes
             string output = "";
-            if ((input & TPM_E_TPM_ERROR_MASK) == TPM_E_TPM_ERROR_MASK)
-            {
-                output = String.Format("TPM return code 0x{0:x} encoded in Windows error code.\n", input ^ TPM_E_TPM_ERROR_MASK);
-                input = input ^ TPM_E_TPM_ERROR_MASK;
-            }
-
-            if ((input & TPM_E_ERROR_MASK) == TPM_E_ERROR_MASK)
+            if ((((input & STATUS_SEVERITY_MASK) == STATUS_SEVERITY_ERROR) ||
+                 ((input & STATUS_SEVERITY_MASK) == STATUS_SEVERITY_WARNING)) &&
+                (((input & STATUS_FACILITY_MASK) == FACILITY_TPM_SERVICE) ||
+                 ((input & STATUS_FACILITY_MASK) == FACILITY_TPM_SOFTWARE)))
             {
                 output = DecodeWindowsError(input);
             }
@@ -187,8 +184,39 @@ namespace TpmRcDecoder
 
         private const UInt32 TPM_RC_ERROR_MASK = 0x7f;
 
-        private const UInt32 TPM_E_ERROR_MASK = 0x80280000;
-        private const UInt32 TPM_E_TPM_ERROR_MASK = 0x80290000;
+        //
+        //  Values are 32 bit values laid out as follows:
+        //
+        //   3 3 2 2 2 2 2 2 2 2 2 2 1 1 1 1 1 1 1 1 1 1
+        //   1 0 9 8 7 6 5 4 3 2 1 0 9 8 7 6 5 4 3 2 1 0 9 8 7 6 5 4 3 2 1 0
+        //  +---+-+-+-----------------------+-------------------------------+
+        //  |Sev|C|R|     Facility          |               Code            |
+        //  +---+-+-+-----------------------+-------------------------------+
+        //
+        //  where
+        //
+        //      Sev - is the severity code
+        //
+        //          00 - Success
+        //          01 - Informational
+        //          10 - Warning
+        //          11 - Error
+        //
+        //      C - is the Customer code flag
+        //
+        //      R - is a reserved bit
+        //
+        //      Facility - is the facility code
+        //
+        //      Code - is the facility's status code
+        //
+        private const UInt32 STATUS_SEVERITY_MASK = 0xC0000000;
+        private const UInt32 STATUS_SEVERITY_ERROR = 0xC0000000;
+        private const UInt32 STATUS_SEVERITY_WARNING = 0x80000000;
+
+        private const UInt32 STATUS_FACILITY_MASK = 0x0FFF0000;
+        private const UInt32 FACILITY_TPM_SERVICE = 0x00280000;
+        private const UInt32 FACILITY_TPM_SOFTWARE = 0x00290000;
 
         private const UInt32 TPM_RC_FMT_PARAM = 0x40;
         private const int TPM_RC_FMT_PARAM_SHIFT = 8;
@@ -233,6 +261,7 @@ namespace TpmRcDecoder
             TPM_RC_POLICY_CC = 0x024, // the commandCode in the policy is not the commandCode of the command
             TPM_RC_BINDING = 0x025,
             TPM_RC_CURVE = 0x026, // curve not supported
+            TPM_RC_ECC_POINT = 0x27, // point is not on the required curve.
         };
 
         private string DecodeFormatError(UInt32 input)
@@ -512,6 +541,7 @@ namespace TpmRcDecoder
 
         enum TPM_WIN_ERROR : uint
         {
+            TPM_E_ERROR_MASK = 0x80280000,
             TPM_E_AUTHFAIL = 0x80280001,
             TPM_E_BADINDEX = 0x80280002,
             TPM_E_BAD_PARAMETER = 0x80280003,
@@ -717,7 +747,135 @@ namespace TpmRcDecoder
             TPM_E_PCP_AUTHENTICATION_IGNORED = 0x80290409,
             TPM_E_PCP_POLICY_NOT_FOUND = 0x8029040A,
             TPM_E_PCP_PROFILE_NOT_FOUND = 0x8029040B,
-            TPM_E_PCP_VALIDATION_FAILED = 0x8029040C
+            TPM_E_PCP_VALIDATION_FAILED = 0x8029040C,
+            STATUS_TPM_ERROR_MASK = 0xC0290000,
+            STATUS_TPM_AUTHFAIL = 0xC0290001,
+            STATUS_TPM_BADINDEX = 0xC0290002,
+            STATUS_TPM_BAD_PARAMETER = 0xC0290003,
+            STATUS_TPM_AUDITFAILURE = 0xC0290004,
+            STATUS_TPM_CLEAR_DISABLED = 0xC0290005,
+            STATUS_TPM_DEACTIVATED = 0xC0290006,
+            STATUS_TPM_DISABLED = 0xC0290007,
+            STATUS_TPM_DISABLED_CMD = 0xC0290008,
+            STATUS_TPM_FAIL = 0xC0290009,
+            STATUS_TPM_BAD_ORDINAL = 0xC029000A,
+            STATUS_TPM_INSTALL_DISABLED = 0xC029000B,
+            STATUS_TPM_INVALID_KEYHANDLE = 0xC029000C,
+            STATUS_TPM_KEYNOTFOUND = 0xC029000D,
+            STATUS_TPM_INAPPROPRIATE_ENC = 0xC029000E,
+            STATUS_TPM_MIGRATEFAIL = 0xC029000F,
+            STATUS_TPM_INVALID_PCR_INFO = 0xC0290010,
+            STATUS_TPM_NOSPACE = 0xC0290011,
+            STATUS_TPM_NOSRK = 0xC0290012,
+            STATUS_TPM_NOTSEALED_BLOB = 0xC0290013,
+            STATUS_TPM_OWNER_SET = 0xC0290014,
+            STATUS_TPM_RESOURCES = 0xC0290015,
+            STATUS_TPM_SHORTRANDOM = 0xC0290016,
+            STATUS_TPM_SIZE = 0xC0290017,
+            STATUS_TPM_WRONGPCRVAL = 0xC0290018,
+            STATUS_TPM_BAD_PARAM_SIZE = 0xC0290019,
+            STATUS_TPM_SHA_THREAD = 0xC029001A,
+            STATUS_TPM_SHA_ERROR = 0xC029001B,
+            STATUS_TPM_FAILEDSELFTEST = 0xC029001C,
+            STATUS_TPM_AUTH2FAIL = 0xC029001D,
+            STATUS_TPM_BADTAG = 0xC029001E,
+            STATUS_TPM_IOERROR = 0xC029001F,
+            STATUS_TPM_ENCRYPT_ERROR = 0xC0290020,
+            STATUS_TPM_DECRYPT_ERROR = 0xC0290021,
+            STATUS_TPM_INVALID_AUTHHANDLE = 0xC0290022,
+            STATUS_TPM_NO_ENDORSEMENT = 0xC0290023,
+            STATUS_TPM_INVALID_KEYUSAGE = 0xC0290024,
+            STATUS_TPM_WRONG_ENTITYTYPE = 0xC0290025,
+            STATUS_TPM_INVALID_POSTINIT = 0xC0290026,
+            STATUS_TPM_INAPPROPRIATE_SIG = 0xC0290027,
+            STATUS_TPM_BAD_KEY_PROPERTY = 0xC0290028,
+            STATUS_TPM_BAD_MIGRATION = 0xC0290029,
+            STATUS_TPM_BAD_SCHEME = 0xC029002A,
+            STATUS_TPM_BAD_DATASIZE = 0xC029002B,
+            STATUS_TPM_BAD_MODE = 0xC029002C,
+            STATUS_TPM_BAD_PRESENCE = 0xC029002D,
+            STATUS_TPM_BAD_VERSION = 0xC029002E,
+            STATUS_TPM_NO_WRAP_TRANSPORT = 0xC029002F,
+            STATUS_TPM_AUDITFAIL_UNSUCCESSFUL = 0xC0290030,
+            STATUS_TPM_AUDITFAIL_SUCCESSFUL = 0xC0290031,
+            STATUS_TPM_NOTRESETABLE = 0xC0290032,
+            STATUS_TPM_NOTLOCAL = 0xC0290033,
+            STATUS_TPM_BAD_TYPE = 0xC0290034,
+            STATUS_TPM_INVALID_RESOURCE = 0xC0290035,
+            STATUS_TPM_NOTFIPS = 0xC0290036,
+            STATUS_TPM_INVALID_FAMILY = 0xC0290037,
+            STATUS_TPM_NO_NV_PERMISSION = 0xC0290038,
+            STATUS_TPM_REQUIRES_SIGN = 0xC0290039,
+            STATUS_TPM_KEY_NOTSUPPORTED = 0xC029003A,
+            STATUS_TPM_AUTH_CONFLICT = 0xC029003B,
+            STATUS_TPM_AREA_LOCKED = 0xC029003C,
+            STATUS_TPM_BAD_LOCALITY = 0xC029003D,
+            STATUS_TPM_READ_ONLY = 0xC029003E,
+            STATUS_TPM_PER_NOWRITE = 0xC029003F,
+            STATUS_TPM_FAMILYCOUNT = 0xC0290040,
+            STATUS_TPM_WRITE_LOCKED = 0xC0290041,
+            STATUS_TPM_BAD_ATTRIBUTES = 0xC0290042,
+            STATUS_TPM_INVALID_STRUCTURE = 0xC0290043,
+            STATUS_TPM_KEY_OWNER_CONTROL = 0xC0290044,
+            STATUS_TPM_BAD_COUNTER = 0xC0290045,
+            STATUS_TPM_NOT_FULLWRITE = 0xC0290046,
+            STATUS_TPM_CONTEXT_GAP = 0xC0290047,
+            STATUS_TPM_MAXNVWRITES = 0xC0290048,
+            STATUS_TPM_NOOPERATOR = 0xC0290049,
+            STATUS_TPM_RESOURCEMISSING = 0xC029004A,
+            STATUS_TPM_DELEGATE_LOCK = 0xC029004B,
+            STATUS_TPM_DELEGATE_FAMILY = 0xC029004C,
+            STATUS_TPM_DELEGATE_ADMIN = 0xC029004D,
+            STATUS_TPM_TRANSPORT_NOTEXCLUSIVE = 0xC029004E,
+            STATUS_TPM_OWNER_CONTROL = 0xC029004F,
+            STATUS_TPM_DAA_RESOURCES = 0xC0290050,
+            STATUS_TPM_DAA_INPUT_DATA0 = 0xC0290051,
+            STATUS_TPM_DAA_INPUT_DATA1 = 0xC0290052,
+            STATUS_TPM_DAA_ISSUER_SETTINGS = 0xC0290053,
+            STATUS_TPM_DAA_TPM_SETTINGS = 0xC0290054,
+            STATUS_TPM_DAA_STAGE = 0xC0290055,
+            STATUS_TPM_DAA_ISSUER_VALIDITY = 0xC0290056,
+            STATUS_TPM_DAA_WRONG_W = 0xC0290057,
+            STATUS_TPM_BAD_HANDLE = 0xC0290058,
+            STATUS_TPM_BAD_DELEGATE = 0xC0290059,
+            STATUS_TPM_BADCONTEXT = 0xC029005A,
+            STATUS_TPM_TOOMANYCONTEXTS = 0xC029005B,
+            STATUS_TPM_MA_TICKET_SIGNATURE = 0xC029005C,
+            STATUS_TPM_MA_DESTINATION = 0xC029005D,
+            STATUS_TPM_MA_SOURCE = 0xC029005E,
+            STATUS_TPM_MA_AUTHORITY = 0xC029005F,
+            STATUS_TPM_PERMANENTEK = 0xC0290061,
+            STATUS_TPM_BAD_SIGNATURE = 0xC0290062,
+            STATUS_TPM_NOCONTEXTSPACE = 0xC0290063,
+            STATUS_TPM_COMMAND_BLOCKED = 0xC0290400,
+            STATUS_TPM_INVALID_HANDLE = 0xC0290401,
+            STATUS_TPM_DUPLICATE_VHANDLE = 0xC0290402,
+            STATUS_TPM_EMBEDDED_COMMAND_BLOCKED = 0xC0290403,
+            STATUS_TPM_EMBEDDED_COMMAND_UNSUPPORTED = 0xC0290404,
+            STATUS_TPM_RETRY = 0xC0290800,
+            STATUS_TPM_NEEDS_SELFTEST = 0xC0290801,
+            STATUS_TPM_DOING_SELFTEST = 0xC0290802,
+            STATUS_TPM_DEFEND_LOCK_RUNNING = 0xC0290803,
+            STATUS_TPM_COMMAND_CANCELED = 0xC0291001,
+            STATUS_TPM_TOO_MANY_CONTEXTS = 0xC0291002,
+            STATUS_TPM_NOT_FOUND = 0xC0291003,
+            STATUS_TPM_ACCESS_DENIED = 0xC0291004,
+            STATUS_TPM_INSUFFICIENT_BUFFER = 0xC0291005,
+            STATUS_TPM_PPI_FUNCTION_UNSUPPORTED = 0xC0291006,
+            STATUS_PCP_ERROR_MASK = 0xC0292000,
+            STATUS_PCP_DEVICE_NOT_READY = 0xC0292001,
+            STATUS_PCP_INVALID_HANDLE = 0xC0292002,
+            STATUS_PCP_INVALID_PARAMETER = 0xC0292003,
+            STATUS_PCP_FLAG_NOT_SUPPORTED = 0xC0292004,
+            STATUS_PCP_NOT_SUPPORTED = 0xC0292005,
+            STATUS_PCP_BUFFER_TOO_SMALL = 0xC0292006,
+            STATUS_PCP_INTERNAL_ERROR = 0xC0292007,
+            STATUS_PCP_AUTHENTICATION_FAILED = 0xC0292008,
+            STATUS_PCP_AUTHENTICATION_IGNORED = 0xC0292009,
+            STATUS_PCP_POLICY_NOT_FOUND = 0xC029200A,
+            STATUS_PCP_PROFILE_NOT_FOUND = 0xC029200B,
+            STATUS_PCP_VALIDATION_FAILED = 0xC029200C,
+            STATUS_PCP_DEVICE_NOT_FOUND = 0xC029200D,
         };
 
         private static readonly Dictionary<UInt32, string> TPM_WIN_ERROR_DESC = new Dictionary<UInt32, string>
@@ -928,21 +1086,30 @@ namespace TpmRcDecoder
             { 0x80290409, "The Platform Crypto Device has ignored the authorization for the provider object, to mitigate against a dictionary attack." },
             { 0x8029040A, "The referenced policy was not found." },
             { 0x8029040B, "The referenced profile was not found." },
-            { 0x8029040C, "The validation was not successful." }
+            { 0x8029040C, "The validation was not successful." },
         };
 
         private string DecodeWindowsError(uint input)
         {
             string output = "Windows Error Code:\n";
-            string description;
-            if (TPM_WIN_ERROR_DESC.TryGetValue(input, out description))
-            {
-                output += " " + Enum.GetName(typeof(TPM_WIN_ERROR), input) + "\n ";
-                output += description;
-            }
-            else
+
+            string name = Enum.GetName(typeof(TPM_WIN_ERROR), input);
+            if (string.IsNullOrEmpty(name))
             {
                 output += " Unknown Windows error code.\n";
+            }
+            else
+            { 
+                output += " " + name + "\n ";
+                if ((input & (uint)TPM_WIN_ERROR.STATUS_TPM_ERROR_MASK) == (uint)TPM_WIN_ERROR.STATUS_TPM_ERROR_MASK)
+                {
+                    input = (input ^ (uint)TPM_WIN_ERROR.STATUS_TPM_ERROR_MASK) | (uint)TPM_WIN_ERROR.TPM_E_ERROR_MASK;
+                }
+                string description;
+                if (TPM_WIN_ERROR_DESC.TryGetValue(input, out description))
+                {
+                    output += " " + description;
+                }
             }
             return output;
         }

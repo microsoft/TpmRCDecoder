@@ -1,0 +1,30 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<VoiceCommands xmlns="http://schemas.microsoft.com/voicecommands/1.2">
+    <CommandSet xml:lang="en-us" Name="TPMErrors_en-us">
+        <AppName> TPM error </AppName>
+        <Example> decode error </Example>
+
+        <Command Name="decodeReturnCode">
+            <Example> decode TPM error code  </Example>
+            <ListenFor RequireAppName="BeforeOrAfterPhrase"> decode [TPM] return code {errorCodeSearch} </ListenFor>
+            <ListenFor RequireAppName="BeforeOrAfterPhrase"> decode error [code] {errorCodeSearch} </ListenFor>
+            <ListenFor RequireAppName="ExplicitlySpecified"> decode {builtin:AppName} code {errorCodeSearch} </ListenFor>
+            <Feedback> Decoding return code {errorCodeSearch} </Feedback>
+            <Navigate/>
+        </Command>
+
+        <PhraseList Label="errorCodeSearch">
+            <!-- example error codes -->
+            <Item> 128 </Item>
+            <Item> 80290128 </Item>
+            <Item> 101 </Item>
+        </PhraseList>
+
+        <PhraseTopic Label="errorCodeSearch" Scenario="Search"> 
+            <Subject>Number</Subject> 
+        </PhraseTopic>
+    </CommandSet>
+
+    <!-- Other CommandSets for other languages -->
+
+</VoiceCommands>

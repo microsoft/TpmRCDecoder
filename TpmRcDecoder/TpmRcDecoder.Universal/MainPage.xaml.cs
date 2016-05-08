@@ -30,6 +30,20 @@ namespace TpmRcDecoder.Universal
             this.InitializeComponent();
         }
 
+        protected override void OnNavigatedTo(NavigationEventArgs e)
+        {
+            base.OnNavigatedTo(e);
+
+            string input = e.Parameter as string;
+            if (!string.IsNullOrEmpty(input))
+            {
+                Input.Text = input;
+
+                Decoder decoder = new Decoder();
+                Output.Text = decoder.Decode(input);
+            }
+        }
+
         private void Decode_Click(object sender, RoutedEventArgs e)
         {
             Decoder decoder = new Decoder();
