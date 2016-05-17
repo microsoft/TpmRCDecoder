@@ -83,7 +83,7 @@ namespace TpmRcDecoder.Universal
                 return;
             }
 
-            UInt32 input = 0;
+            uint input = 0;
             try
             {
                 input = UInt32.Parse(InputDec.Text.Trim(), NumberStyles.Integer);

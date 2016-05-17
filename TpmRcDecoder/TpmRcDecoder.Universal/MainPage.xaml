@@ -9,6 +9,52 @@
     mc:Ignorable="d">
 
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+        <!-- Responsive VisualStates -->
+        <VisualStateManager.VisualStateGroups>
+            <VisualStateGroup>
+                <VisualState>
+                    <!-- VisualState to be triggered when window width is >=520 effective pixels -->
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowWidth="520" />
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                        <Setter Target="InputDec.HorizontalAlignment" Value="" />
+                        <Setter Target="Decode.(RelativePanel.RightOf)" Value="Input" />
+                        <Setter Target="Decode.(RelativePanel.Below)" Value="" />
+                        <Setter Target="Decode.HorizontalAlignment" Value="" />
+                        <Setter Target="Input.(RelativePanel.RightOf)" Value="OrLabel" />
+                        <Setter Target="Input.(RelativePanel.Below)" Value="" />
+                        <Setter Target="OrLabel.(RelativePanel.RightOf)" Value="InputDec" />
+                        <Setter Target="OrLabel.(RelativePanel.Below)" Value="" />
+                        <Setter Target="InputDec.Margin" Value="20,10,10,10" />
+                        <Setter Target="OrLabel.Margin" Value="10,20,10,10" />
+                        <Setter Target="Input.Margin" Value="10,10" />
+                        <Setter Target="Decode.Margin" Value="10,10,20,10" />
+                    </VisualState.Setters>
+                </VisualState>
+                <VisualState>
+                    <!-- VisualState to be triggered when window width is >=0 and <520 effective pixels -->
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowWidth="0" />
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                        <Setter Target="InputDec.HorizontalAlignment" Value="Stretch" />
+                        <Setter Target="Decode.(RelativePanel.RightOf)" Value="" />
+                        <Setter Target="Decode.(RelativePanel.Below)" Value="OrLabel" />
+                        <Setter Target="Decode.HorizontalAlignment" Value="Stretch" />
+                        <Setter Target="Input.(RelativePanel.RightOf)" Value="OrLabel" />
+                        <Setter Target="Input.(RelativePanel.Below)" Value="InputDec" />
+                        <Setter Target="OrLabel.(RelativePanel.RightOf)" Value="" />
+                        <Setter Target="OrLabel.(RelativePanel.Below)" Value="InputDec" />
+                        <Setter Target="InputDec.Margin" Value="20,10" />
+                        <Setter Target="OrLabel.Margin" Value="20,20,10,10" />
+                        <Setter Target="Input.Margin" Value="10,10,20,10" />
+                        <Setter Target="Decode.Margin" Value="20,10" />
+                    </VisualState.Setters>
+                </VisualState>
+            </VisualStateGroup>
+        </VisualStateManager.VisualStateGroups>
+        
         <Grid.ChildrenTransitions>
             <TransitionCollection>
                 <EntranceThemeTransition/>
@@ -27,12 +73,6 @@
 
         <StackPanel Grid.Row="1" >
             <Grid x:Name="ContentRoot" Margin="0,0,0,0">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition />
-                    <ColumnDefinition Width="Auto" />
-                    <ColumnDefinition />
-                    <ColumnDefinition Width="Auto" />
-                </Grid.ColumnDefinitions>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
@@ -40,13 +80,17 @@
                     <RowDefinition Height="250" />
                 </Grid.RowDefinitions>
 
-                <TextBlock Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="4" HorizontalAlignment="Left" Margin="20,10,0,10" TextWrapping="Wrap" Text="Input TPM return code (decimal or hexadecimal)" Style="{StaticResource BodyTextBlockStyle}" VerticalAlignment="Top" />
-                <TextBox Grid.Row="1" Grid.Column="0" x:Name="InputDec" Margin="20,10" Text="" TextAlignment="Right" VerticalAlignment="Stretch" PlaceholderText="Input decimal error code here" IsTextPredictionEnabled="False" AllowDrop="True" TextChanged="InputDec_TextChanged" />
-                <TextBlock Grid.Row="1" Grid.Column="1" Margin="20,10,0,10" TextAlignment="Right" VerticalAlignment="Center" Text=" or 0x"  AllowDrop="True"  Style="{StaticResource BodyTextBlockStyle}" />
-                <TextBox Grid.Row="1" Grid.Column="2" x:Name="Input" Margin="10,10,20,10" Text="" TextAlignment="Right" VerticalAlignment="Stretch" PlaceholderText="Input hexadecimal error code here" IsTextPredictionEnabled="False" AllowDrop="True" TextChanged="Input_TextChanged"/>
-                <Button Grid.Row="1" Grid.Column="3" x:Name="Decode" Margin="20,10" Style="{StaticResource TextBlockButtonStyle}" Content="Decode" Width="150" Height="30" Click="Decode_Click" VerticalAlignment="Center" HorizontalContentAlignment="Center"/>
+                <TextBlock Grid.Row="0" HorizontalAlignment="Left" Margin="20,10,0,10" TextWrapping="Wrap" Text="Input TPM return code (decimal or hexadecimal)" Style="{StaticResource BodyTextBlockStyle}" VerticalAlignment="Top" />
+                <RelativePanel Grid.Row="1" HorizontalAlignment="Left" Margin="0" >
+                    <TextBox x:Name="InputDec" Margin="20,10,10,10" TextAlignment="Right" VerticalAlignment="Stretch" PlaceholderText="Input decimal error code here" IsTextPredictionEnabled="False" AllowDrop="True" TextChanged="InputDec_TextChanged" />
+                    <TextBlock x:Name="OrLabel" RelativePanel.RightOf="InputDec" Margin="10,20,10,10" TextAlignment="Right" VerticalAlignment="Center" Text=" or 0x"  AllowDrop="True"  Style="{StaticResource BodyTextBlockStyle}" />
+                    <TextBox x:Name="Input" RelativePanel.RightOf="OrLabel" Margin="10,10" TextAlignment="Right" VerticalAlignment="Stretch" PlaceholderText="Input hexadecimal error code here" IsTextPredictionEnabled="False" AllowDrop="True" TextChanged="Input_TextChanged"/>
+                    <Button x:Name="Decode" RelativePanel.RightOf="Input" Margin="10,10,20,10" Style="{StaticResource TextBlockButtonStyle}" Content="Decode" Width="150" Height="30" Click="Decode_Click" VerticalAlignment="Center" HorizontalContentAlignment="Center"/>
+                </RelativePanel>
                 <TextBlock Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="4" HorizontalAlignment="Left" Margin="20,10,0,10" TextWrapping="Wrap" Text="Decoded return code" Style="{StaticResource BodyTextBlockStyle}" VerticalAlignment="Top"/>
-                <TextBox Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="4" x:Name="Output" Margin="20,10" TextWrapping="Wrap" Text="Error description" VerticalAlignment="Stretch" IsReadOnly="True"/>
+                <ScrollViewer Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="4" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                    <TextBox x:Name="Output" Margin="20,10" TextWrapping="Wrap" Text="Error description" VerticalAlignment="Stretch" IsReadOnly="True"/>
+                </ScrollViewer>
             </Grid>
         </StackPanel>
     </Grid>
