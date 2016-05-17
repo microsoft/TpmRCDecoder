@@ -18,10 +18,10 @@
                         <AdaptiveTrigger MinWindowWidth="520" />
                     </VisualState.StateTriggers>
                     <VisualState.Setters>
-                        <Setter Target="InputDec.HorizontalAlignment" Value="" />
+                        <Setter Target="InputDec.HorizontalAlignment" Value="Left" />
                         <Setter Target="Decode.(RelativePanel.RightOf)" Value="Input" />
                         <Setter Target="Decode.(RelativePanel.Below)" Value="" />
-                        <Setter Target="Decode.HorizontalAlignment" Value="" />
+                        <Setter Target="Decode.HorizontalAlignment" Value="Right" />
                         <Setter Target="Input.(RelativePanel.RightOf)" Value="OrLabel" />
                         <Setter Target="Input.(RelativePanel.Below)" Value="" />
                         <Setter Target="OrLabel.(RelativePanel.RightOf)" Value="InputDec" />
