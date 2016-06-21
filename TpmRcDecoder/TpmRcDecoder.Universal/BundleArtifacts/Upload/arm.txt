@@ -1,1 +1,1 @@
-MainPackage=C:\Users\raigner\Source\Repos\TpmRCDecoder\TpmRcDecoder\TpmRcDecoder.Universal\bin\ARM\Release\Upload\TpmRcDecoder.Universal_1.4.2.0_ARM.appx
+MainPackage=C:\Users\raigner\Source\Repos\TpmRCDecoder\TpmRcDecoder\TpmRcDecoder.Universal\bin\ARM\Release\Upload\TpmRcDecoder.Universal_1.4.3.0_ARM.appx
