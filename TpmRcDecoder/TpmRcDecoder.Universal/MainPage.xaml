@@ -71,27 +71,25 @@
             <TextBlock Text="TPM Return Code Decoder" Style="{ThemeResource TitleTextBlockStyle}" Margin="0,12,0,0"/>
         </StackPanel>
 
-        <StackPanel Grid.Row="1" >
+        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" VerticalScrollMode="Enabled">
             <Grid x:Name="ContentRoot" Margin="0,0,0,0">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
-                    <RowDefinition Height="250" />
+                    <RowDefinition Height="*" MinHeight="250"/>
                 </Grid.RowDefinitions>
 
                 <TextBlock Grid.Row="0" HorizontalAlignment="Left" Margin="20,10,0,10" TextWrapping="Wrap" Text="Input TPM return code (decimal or hexadecimal)" Style="{StaticResource BodyTextBlockStyle}" VerticalAlignment="Top" />
                 <RelativePanel Grid.Row="1" HorizontalAlignment="Left" Margin="0" >
-                    <TextBox x:Name="InputDec" Margin="20,10,10,10" TextAlignment="Right" VerticalAlignment="Stretch" PlaceholderText="Input decimal error code here" IsTextPredictionEnabled="False" AllowDrop="True" TextChanged="InputDec_TextChanged" />
-                    <TextBlock x:Name="OrLabel" RelativePanel.RightOf="InputDec" Margin="10,20,10,10" TextAlignment="Right" VerticalAlignment="Center" Text=" or 0x"  AllowDrop="True"  Style="{StaticResource BodyTextBlockStyle}" />
-                    <TextBox x:Name="Input" RelativePanel.RightOf="OrLabel" Margin="10,10" TextAlignment="Right" VerticalAlignment="Stretch" PlaceholderText="Input hexadecimal error code here" IsTextPredictionEnabled="False" AllowDrop="True" TextChanged="Input_TextChanged"/>
-                    <Button x:Name="Decode" RelativePanel.RightOf="Input" Margin="10,10,20,10" Style="{StaticResource TextBlockButtonStyle}" Content="Decode" Width="150" Height="30" Click="Decode_Click" VerticalAlignment="Center" HorizontalContentAlignment="Center"/>
+                    <TextBox x:Name="InputDec" Margin="20,10,10,10" TextAlignment="Right" VerticalAlignment="Stretch" HorizontalAlignment="Right" PlaceholderText="Input decimal error code here" IsTextPredictionEnabled="False" AllowDrop="True" TextChanged="InputDec_TextChanged" Width="Auto" MinWidth="200"/>
+                    <TextBlock x:Name="OrLabel" RelativePanel.RightOf="InputDec" Margin="10,20,0,10" TextAlignment="Right" VerticalAlignment="Center" Text=" or 0x"  AllowDrop="True"  Style="{StaticResource BodyTextBlockStyle}" />
+                    <TextBox x:Name="Input" RelativePanel.RightOf="OrLabel" Margin="0,10,10,10" TextAlignment="Right" VerticalAlignment="Stretch" HorizontalAlignment="Right" PlaceholderText="Input hexadecimal error code here" IsTextPredictionEnabled="False" AllowDrop="True" TextChanged="Input_TextChanged" Width="Auto" MinWidth="200"/>
+                    <Button x:Name="Decode" RelativePanel.RightOf="Input" Margin="10,10,20,10" Style="{StaticResource TextBlockButtonStyle}" Content="Decode" Width="150" Height="30" Click="Decode_Click" VerticalAlignment="Center" HorizontalContentAlignment="Center" BorderBrush="{StaticResource ButtonBorderThemeBrush}"/>
                 </RelativePanel>
-                <TextBlock Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="4" HorizontalAlignment="Left" Margin="20,10,0,10" TextWrapping="Wrap" Text="Decoded return code" Style="{StaticResource BodyTextBlockStyle}" VerticalAlignment="Top"/>
-                <ScrollViewer Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="4" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
-                    <TextBox x:Name="Output" Margin="20,10" TextWrapping="Wrap" Text="Error description" VerticalAlignment="Stretch" IsReadOnly="True"/>
-                </ScrollViewer>
+                <TextBlock Grid.Row="2" HorizontalAlignment="Left" Margin="20,10,0,10" TextWrapping="Wrap" Text="Decoded return code" Style="{StaticResource BodyTextBlockStyle}" VerticalAlignment="Top"/>
+                <TextBox x:Name="Output" Grid.Row="3" Margin="20,10" TextWrapping="Wrap" Text="Error description" VerticalAlignment="Stretch" IsReadOnly="True"/>
             </Grid>
-        </StackPanel>
+        </ScrollViewer>
     </Grid>
 </Page>
