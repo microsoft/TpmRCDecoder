@@ -3,11 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
 VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "TpmRcDecoder", "TpmRcDecoder", "{8A60988A-E5D2-4C16-AA70-B14479FEDCF3}"
-	ProjectSection(SolutionItems) = preProject
-		..\README.md = ..\README.md
-	EndProjectSection
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TpmRcDecoder.Universal", "TpmRcDecoder.Universal\TpmRcDecoder.Universal.csproj", "{6BA11D1B-9AAB-4FA8-9612-C3E5B941DC18}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{54472369-9578-4468-B0E9-57E92AC737A1}"
@@ -55,8 +50,5 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
-	EndGlobalSection
-	GlobalSection(NestedProjects) = preSolution
-		{6BA11D1B-9AAB-4FA8-9612-C3E5B941DC18} = {8A60988A-E5D2-4C16-AA70-B14479FEDCF3}
 	EndGlobalSection
 EndGlobal
