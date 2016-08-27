@@ -133,6 +133,7 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Decoder.cs" />
     <Compile Include="MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
@@ -167,7 +168,6 @@
       <SubType>Designer</SubType>
     </Page>
   </ItemGroup>
-  <Import Project="..\TpmRcDecoder\TpmRcDecoder.Decoder\TpmRcDecoder.Decoder.projitems" Label="Shared" />
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
     <VisualStudioVersion>14.0</VisualStudioVersion>
   </PropertyGroup>
