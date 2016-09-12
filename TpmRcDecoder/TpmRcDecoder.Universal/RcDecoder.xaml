@@ -1,0 +1,68 @@
+﻿<Page
+    x:Class="TpmRcDecoder.RcDecoder"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:TpmRcDecoder"
+    xmlns:ctl="using:TpmRcDecoder.Controls"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    KeyDown="MainPage_KeyDown"
+    mc:Ignorable="d">
+
+    <Grid Background="{StaticResource ApplicationPageBackgroundThemeBrush}">
+        <VisualStateManager.VisualStateGroups>
+            <VisualStateGroup>
+                <VisualState>
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowWidth="{StaticResource MediumWindowSnapPoint}" />
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                        <Setter Target="LayoutRoot.Margin" Value="12,0,0,0"/>
+                        <Setter Target="title.Style" Value="{StaticResource PageTitleTextBlockStyle}"/>
+                    </VisualState.Setters>
+                </VisualState>
+                <VisualState>
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowWidth="{StaticResource MinWindowSnapPoint}" />
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                        <Setter Target="LayoutRoot.Margin" Value="0"/>
+                        <Setter Target="title.Style" Value="{StaticResource NarrowPageTitleTextBlockStyle}"/>
+                    </VisualState.Setters>
+                </VisualState>
+            </VisualStateGroup>
+        </VisualStateManager.VisualStateGroups>
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!-- Title Panel -->
+        <ctl:PageHeader>
+            <ctl:PageHeader.HeaderContent>
+                <TextBlock x:Name="title" Style="{StaticResource PageTitleTextBlockStyle}" Text="Return Code Decoder"/>
+            </ctl:PageHeader.HeaderContent>
+        </ctl:PageHeader>
+
+        <ScrollViewer x:Name="LayoutRoot"
+                      Grid.Row="1" 
+                      Margin="24,0,0,0"
+                      VerticalScrollBarVisibility="Auto" 
+                      VerticalScrollMode="Enabled">
+            <Grid x:Name="ContentRoot" Margin="0,0,0,0">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" MinHeight="250"/>
+                </Grid.RowDefinitions>
+
+                <TextBlock Grid.Row="0" Margin="20,10" HorizontalAlignment="Left" TextWrapping="Wrap" Text="Input TPM return code (in decimal or hexadecimal format):" />
+                <TextBox Grid.Row="1" x:Name="Input" Margin="20,10" TextAlignment="Right" VerticalAlignment="Top" HorizontalAlignment="Stretch" PlaceholderText="Input error code here" IsTextPredictionEnabled="False" AllowDrop="True" />
+                <Button Grid.Row="2" x:Name="Decode" Margin="20,10" Content="Decode" Click="Decode_Click" HorizontalContentAlignment="Center" HorizontalAlignment="Stretch" />
+                <TextBox Grid.Row="3" x:Name="Output" Margin="20,10" TextWrapping="Wrap" Text="Decoded Return Code description" VerticalAlignment="Stretch" IsReadOnly="True"/>
+            </Grid>
+        </ScrollViewer>
+    </Grid>
+</Page>

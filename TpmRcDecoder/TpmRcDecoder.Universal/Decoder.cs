@@ -44,12 +44,12 @@ namespace TpmRcDecoder
             }
             else if ((input & TPM_RC_VENDOR_ERROR) == TPM_RC_VENDOR_ERROR)
             {
-                output += String.Format("Vendor specific error: {0:x}", input & TPM_RC_ERROR_MASK);
+                output += String.Format("Vendor specific error: 0x{0:x}", input & TPM_RC_ERROR_MASK);
             }
             else if ((input & TPM_RC_RSVD) == TPM_RC_RSVD)
             {
                 output += "Bit 9 of return code not 0.\n";
-                output += String.Format("Cleaned return code is {0:x}.\n", input ^ TPM_RC_RSVD);
+                output += String.Format("Cleaned return code is 0x{0:x}.\n", input ^ TPM_RC_RSVD);
             }
             else if ((input & TPM_RC_WARN) == TPM_RC_WARN)
             {
@@ -309,17 +309,17 @@ namespace TpmRcDecoder
 
             if ((input & TPM_RC_FMT_PARAM) == TPM_RC_FMT_PARAM)
             {
-                output += " Parameter: " + String.Format("{0:x}", param) + "\n";
+                output += " Parameter: " + String.Format("0x{0:x}", param) + "\n";
             }
             else
             {
                 if ((param & TPM_RC_FMT_SESSION) == TPM_RC_FMT_SESSION)
                 {
-                    output += " Session: " + String.Format("{0:x}", param & TPM_RC_FMT_SESSION_MASK) + "\n";
+                    output += " Session: " + String.Format("0x{0:x}", param & TPM_RC_FMT_SESSION_MASK) + "\n";
                 }
                 else
                 {
-                    output += " Handle: " + String.Format("{0:x}", param) + "\n";
+                    output += " Handle: " + String.Format("0x{0:x}", param) + "\n";
                 }
             }
 
@@ -753,7 +753,7 @@ namespace TpmRcDecoder
         {
             UInt32 error = input & TPM_RC_ERROR_MASK;
 
-            string output = "TPM Error:";
+            string output = string.Format("TPM Error (0x{0:x}):", input);
 
             string error20 = Enum.GetName(typeof(TPM_RC_VER1_CODES), error);
             string error12 = Enum.GetName(typeof(TPM_12_ERROR_CODES), error);

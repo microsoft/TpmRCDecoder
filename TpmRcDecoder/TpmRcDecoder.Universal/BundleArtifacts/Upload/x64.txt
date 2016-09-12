@@ -1,1 +1,2 @@
-MainPackage=C:\Users\raigner\Source\Repos\TpmRCDecoder\TpmRcDecoder\TpmRcDecoder.Universal\bin\x64\Release\Upload\TpmRcDecoder.Universal_1.4.3.0_x64.appx
+MainPackage=C:\Users\raigner\Source\Repos\TpmRCDecoder\TpmRcDecoder\TpmRcDecoder.Universal\bin\x64\Release\Upload\TpmRcDecoder_1.4.5.0_x64.appx
+SymbolPackage=C:\Users\raigner\Source\Repos\TpmRCDecoder\TpmRcDecoder\TpmRcDecoder.Universal\AppPackages\TpmRcDecoder_1.4.5.0\TpmRcDecoder_1.4.5.0_x64.appxsym

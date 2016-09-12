@@ -1,23 +1,18 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
+using TpmRcDecoder.Views;
 using Windows.ApplicationModel;
 using Windows.ApplicationModel.Activation;
 using Windows.Foundation;
-using Windows.Foundation.Collections;
 using Windows.Media.SpeechRecognition;
 using Windows.Storage;
+using Windows.UI;
+using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 
-namespace TpmRcDecoder.Universal
+namespace TpmRcDecoder
 {
     /// <summary>
     /// Provides application-specific behavior to supplement the default Application class.
@@ -43,24 +38,53 @@ namespace TpmRcDecoder.Universal
         /// Both the OnLaunched and OnActivated event handlers need to make sure the root frame has been created, so the common  
         /// code to do that is factored into this method and called from both. 
         /// </summary> 
-        private void EnsureRootFrame(ApplicationExecutionState previousExecutionState)
+        private void EnsureRootFrame(ApplicationExecutionState previousExecutionState, string arguments)
         {
-            this.rootFrame = Window.Current.Content as Frame;
+            AppShell shell = Window.Current.Content as AppShell;
 
-            // Do not repeat app initialization when the Window already has content, 
-            // just ensure that the window is active 
-            if (this.rootFrame == null)
+            // Do not repeat app initialization when the Window already has content,
+            // just ensure that the window is active
+            if (shell == null)
             {
-                // Create a Frame to act as the navigation context and navigate to the first page 
-                this.rootFrame = new Frame();
+                // Create a AppShell to act as the navigation context and navigate to the first page
+                shell = new AppShell();
 
-                this.rootFrame.CacheSize = 1;
+                // Set the default language
+                shell.Language = Windows.Globalization.ApplicationLanguages.Languages[0];
 
-                // Place the frame in the current Window 
-                Window.Current.Content = this.rootFrame;
+                shell.AppFrame.NavigationFailed += OnNavigationFailed;
+
+                if (previousExecutionState == ApplicationExecutionState.Terminated)
+                {
+                    //TODO: Load state from previously suspended application
+                }
             }
 
-            // Ensure the current window is active 
+            // Place our app shell in the current Window
+            Window.Current.Content = shell;
+
+            if (shell.AppFrame.Content == null)
+            {
+                ApplicationDataContainer roamingSettings = ApplicationData.Current.RoamingSettings;
+                const string DontShowLandingPageSetting = "DontShowLandingPage";
+
+                if (roamingSettings.Values[DontShowLandingPageSetting] != null &&
+                    roamingSettings.Values[DontShowLandingPageSetting].Equals(true.ToString()))
+                {
+                    // When the navigation stack isn't restored, navigate to the first page
+                    // suppressing the initial entrance animation. Because landing page is disabled,
+                    // got to first content page.
+                    shell.AppFrame.Navigate(typeof(RcDecoder), arguments, new Windows.UI.Xaml.Media.Animation.SuppressNavigationTransitionInfo());
+                }
+                else
+                {
+                    // When the navigation stack isn't restored, navigate to the first page
+                    // suppressing the initial entrance animation.
+                    shell.AppFrame.Navigate(typeof(LandingPage), arguments, new Windows.UI.Xaml.Media.Animation.SuppressNavigationTransitionInfo());
+                }
+            }
+
+            // Ensure the current window is active
             Window.Current.Activate();
         }
 
@@ -69,7 +93,7 @@ namespace TpmRcDecoder.Universal
         /// will be used such as when the application is launched to open a specific file.
         /// </summary>
         /// <param name="e">Details about the launch request and process.</param>
-        protected override async void OnLaunched(LaunchActivatedEventArgs e)
+        protected override void OnLaunched(LaunchActivatedEventArgs e)
         {
 #if DEBUG
             if (System.Diagnostics.Debugger.IsAttached)
@@ -78,23 +102,19 @@ namespace TpmRcDecoder.Universal
             }
 #endif
 
-            EnsureRootFrame(e.PreviousExecutionState);
+            // Change minimum window size 
+            ApplicationView.GetForCurrentView().SetPreferredMinSize(new Size(320, 600));
 
-            if (e.PrelaunchActivated == false)
+            // Darken the window title bar using a color value to match app theme
+            ApplicationViewTitleBar titleBar = ApplicationView.GetForCurrentView().TitleBar;
+            if (titleBar != null)
             {
-                if (rootFrame.Content == null)
-                {
-                    // When the navigation stack isn't restored navigate to the first page,
-                    // configuring the new page by passing required information as a navigation
-                    // parameter
-                    if (!rootFrame.Navigate(typeof(MainPage), e.Arguments))
-                    {
-                        throw new Exception("Failed to create initial page");
-                    }
-                }
-                // Ensure the current window is active
-                Window.Current.Activate();
+                Color titleBarColor = (Color)App.Current.Resources["SystemChromeMediumColor"];
+                titleBar.BackgroundColor = titleBarColor;
+                titleBar.ButtonBackgroundColor = titleBarColor;
             }
+
+            EnsureRootFrame(e.PreviousExecutionState, e.Arguments);
 
             /* no voice controls for now
             // The app must install its command sets at least once. Doing this in OnLaunched 
@@ -125,10 +145,10 @@ namespace TpmRcDecoder.Universal
             */
         }
 
-        /// <summary> 
-        /// Invoked when the application is activated. 
-        /// </summary> 
-        /// <param name="e">Details about the launch request and process.</param> 
+        // <summary> 
+        // Invoked when the application is activated.
+        // </summary> 
+        // <param name = "e" > Details about the launch request and process.</param> 
         protected override void OnActivated(IActivatedEventArgs args)
         {
             if (args.Kind != ActivationKind.VoiceCommand)
@@ -158,8 +178,8 @@ namespace TpmRcDecoder.Universal
                     break;
             }
 
-            EnsureRootFrame(args.PreviousExecutionState);
-            if (!this.rootFrame.Navigate(typeof(MainPage), textSpoken))
+            EnsureRootFrame(args.PreviousExecutionState, "");
+            if (!this.rootFrame.Navigate(typeof(RcDecoder), textSpoken))
             {
                 throw new Exception("Failed to create voice command page");
             }
