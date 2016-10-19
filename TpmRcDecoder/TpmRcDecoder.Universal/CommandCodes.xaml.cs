@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Globalization;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Input;
@@ -3049,12 +3051,23 @@ namespace TpmRcDecoder
                 "  TPM 2.0 Library Specification Revision 1.16, Part 3, Section 23.20" ),
         };
 
+        public class CommandDescriptionComparer : IComparer<TPMCommandDescription>
+        {
+            public int Compare(TPMCommandDescription left, TPMCommandDescription right)
+            {
+                return left.Name.CompareTo(right.Name);
+            }
+        }
+
         public CommandCodes()
         {
             this.InitializeComponent();
             this.m_NavigationHelper = new NavigationHelper(this);
             this.m_NavigationHelper.LoadState += LoadState;
             this.m_NavigationHelper.SaveState += SaveState;
+
+            Array.Sort(m_TPM12Commands, new CommandDescriptionComparer());
+            Array.Sort(m_TPM20Commands, new CommandDescriptionComparer());
 
             ListOfTPMs.Items.Clear();
             ListOfTPMs.Items.Add("TPM 1.2");
@@ -3070,17 +3083,17 @@ namespace TpmRcDecoder
             {
                 case 0:
                     // TPM 1.2
-                    for (int index = 0; index < m_TPM12Commands.Length; index++)
+                    foreach(TPMCommandDescription descr in m_TPM12Commands)
                     {
-                        ListOfCommands.Items.Add(m_TPM12Commands[index].Name);
+                        ListOfCommands.Items.Add(descr.Name);
                     }
                     break;
 
                 case 1:
                     // TPM 2.0
-                    for (int index = 0; index < m_TPM20Commands.Length; index++)
+                    foreach(TPMCommandDescription descr in m_TPM20Commands)
                     {
-                        ListOfCommands.Items.Add(m_TPM20Commands[index].Name);
+                        ListOfCommands.Items.Add(descr.Name);
                     }
                     break;
             }
