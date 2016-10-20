@@ -54,15 +54,13 @@
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
                     <RowDefinition Height="*" MinHeight="250"/>
                 </Grid.RowDefinitions>
 
-                <ComboBox Grid.Row="0" x:Name="ListOfTPMs" Margin="20,10" HorizontalAlignment="Stretch" VerticalAlignment="Top" SelectionChanged="ListOfTPMs_SelectionChanged" PlaceholderText="TPM Version" />
-                <TextBlock Grid.Row="1" Margin="20,10" Text="Please enter command code (in decimal or hexadecimal format) or select command from drop down." TextWrapping="WrapWholeWords"/>
-                <TextBox Grid.Row="2" x:Name="CommandCode" Margin="20,10" HorizontalAlignment="Stretch" VerticalAlignment="Top" TextAlignment="Right" PlaceholderText="TPM Command Code" TextChanged="CommandCode_TextChanged"/>
-                <ComboBox Grid.Row="3" x:Name="ListOfCommands" Margin="20,10" HorizontalAlignment="Stretch" VerticalAlignment="Top" SelectionChanged="ListOfCommands_SelectionChanged" PlaceholderText="TPM Command Name" />
-                <TextBox Grid.Row="4" x:Name="Description" Margin="20,10" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" TextWrapping="Wrap" IsReadOnly="True" Text="TPM command description" />
+                <TextBlock Grid.Row="0" Margin="20,10" Text="Please enter command code (in decimal or hexadecimal format) or select command from drop down." TextWrapping="WrapWholeWords"/>
+                <TextBox Grid.Row="1" x:Name="CommandCode" Margin="20,10" HorizontalAlignment="Stretch" VerticalAlignment="Top" TextAlignment="Right" PlaceholderText="TPM Command Code" TextChanged="CommandCode_TextChanged"/>
+                <ComboBox Grid.Row="2" x:Name="ListOfCommands" Margin="20,10" HorizontalAlignment="Stretch" VerticalAlignment="Top" SelectionChanged="ListOfCommands_SelectionChanged" PlaceholderText="TPM Command Name" />
+                <TextBox Grid.Row="3" x:Name="Description" Margin="20,10" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" TextWrapping="Wrap" IsReadOnly="True" Text="TPM command description" />
             </Grid>
         </ScrollViewer>
     </Grid>

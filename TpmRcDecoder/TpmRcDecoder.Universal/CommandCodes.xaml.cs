@@ -30,9 +30,7 @@ namespace TpmRcDecoder
     public sealed partial class CommandCodes : Page
     {
         private readonly NavigationHelper m_NavigationHelper;
-        private const string m_SettingSelectedTPM = "ccTPM";
         private const string m_SettingCommandCode = "ccCC";
-        private bool m_IgnoreNextChange = false;
         private const string m_DefaultDescription = "TPM command description.";
         private const string m_InvalidCommandDescription = "Invalid command code for TPM.";
         private static TPMCommandDescription[] m_TPM12Commands =
@@ -3069,48 +3067,38 @@ namespace TpmRcDecoder
             Array.Sort(m_TPM12Commands, new CommandDescriptionComparer());
             Array.Sort(m_TPM20Commands, new CommandDescriptionComparer());
 
-            ListOfTPMs.Items.Clear();
-            ListOfTPMs.Items.Add("TPM 1.2");
-            ListOfTPMs.Items.Add("TPM 2.0");
-            ListOfTPMs.SelectedIndex = 1; // default to TPM 2.0
-        }
-
-        private void ListOfTPMs_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
             ListOfCommands.SelectionChanged -= ListOfCommands_SelectionChanged;
             ListOfCommands.Items.Clear();
-            switch (ListOfTPMs.SelectedIndex)
+            // TPM 1.2
+            foreach (TPMCommandDescription descr in m_TPM12Commands)
             {
-                case 0:
-                    // TPM 1.2
-                    foreach(TPMCommandDescription descr in m_TPM12Commands)
-                    {
-                        ListOfCommands.Items.Add(descr.Name);
-                    }
-                    break;
-
-                case 1:
-                    // TPM 2.0
-                    foreach(TPMCommandDescription descr in m_TPM20Commands)
-                    {
-                        ListOfCommands.Items.Add(descr.Name);
-                    }
-                    break;
+                ListOfCommands.Items.Add(descr.Name);
+            }
+            // TPM 2.0
+            foreach (TPMCommandDescription descr in m_TPM20Commands)
+            {
+                ListOfCommands.Items.Add(descr.Name);
             }
             ListOfCommands.SelectionChanged += ListOfCommands_SelectionChanged;
 
             CommandCode.Text = "";
             Description.Text = m_DefaultDescription;
+
+        }
+
+        private void SetIndex(int index, string description)
+        {
+            bool setNotification = ListOfCommands.SelectedIndex != index;
+            if (setNotification)
+                ListOfCommands.SelectionChanged -= ListOfCommands_SelectionChanged;
+            ListOfCommands.SelectedIndex = index;
+            Description.Text = description;
+            if (setNotification)
+                ListOfCommands.SelectionChanged += ListOfCommands_SelectionChanged;
         }
 
         private void CommandCode_TextChanged(object sender, TextChangedEventArgs e)
         {
-            if (m_IgnoreNextChange)
-            {
-                m_IgnoreNextChange = false;
-                return;
-            }
-
             string inStr = CommandCode.Text;
             uint commandCode = ~0u;
             if (inStr.Trim().StartsWith("0x", StringComparison.CurrentCultureIgnoreCase))
@@ -3134,58 +3122,38 @@ namespace TpmRcDecoder
             }
             if (commandCode == ~0u)
             {
-                m_IgnoreNextChange = ListOfCommands.SelectedIndex != -1;
-                ListOfCommands.SelectedIndex = -1;
-                Description.Text = m_InvalidCommandDescription;
+                SetIndex(-1, m_InvalidCommandDescription);
                 return;
             }
 
+            // TPM 1.2
             int index = 0;
-            switch (ListOfTPMs.SelectedIndex)
+            foreach (TPMCommandDescription descr in m_TPM12Commands)
             {
-                case 0:
-                    // TPM 1.2
-                    for (index = 0; index < m_TPM12Commands.Length; index++)
-                    {
-                        if (commandCode == m_TPM12Commands[index].Ordinal)
-                        {
-                            m_IgnoreNextChange = ListOfCommands.SelectedIndex != index;
-                            ListOfCommands.SelectedIndex = index;
-                            Description.Text = m_TPM12Commands[index].Description;
-                            return;
-                        }
-                    }
-                    break;
-
-                case 1:
-                    // TPM 2.0
-                    for (index = 0; index < m_TPM20Commands.Length; index++)
-                    {
-                        if (commandCode == m_TPM20Commands[index].Ordinal)
-                        {
-                            m_IgnoreNextChange = ListOfCommands.SelectedIndex != index;
-                            ListOfCommands.SelectedIndex = index;
-                            Description.Text = m_TPM20Commands[index].Description;
-                            return;
-                        }
-                    }
-                    break;
+                if (commandCode == descr.Ordinal)
+                {
+                    SetIndex(index, descr.Description);
+                    return;
+                }
+                index++;
+            }
+            // TPM 2.0
+            foreach (TPMCommandDescription descr in m_TPM20Commands)
+            {
+                if (commandCode == descr.Ordinal)
+                {
+                    SetIndex(index, descr.Description);
+                    return;
+                }
+                index++;
             }
 
             // no matching command found, set defaults
-            m_IgnoreNextChange = ListOfCommands.SelectedIndex != -1;
-            ListOfCommands.SelectedIndex = -1;
-            Description.Text = m_InvalidCommandDescription;
+            SetIndex(-1, m_InvalidCommandDescription);
         }
 
         private void ListOfCommands_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (m_IgnoreNextChange)
-            {
-                m_IgnoreNextChange = false;
-                return;
-            }
-
             if (ListOfCommands.SelectedIndex == -1)
             {
                 return;
@@ -3193,24 +3161,23 @@ namespace TpmRcDecoder
 
             uint commandCode = ~0u;
             string description = "";
-            switch (ListOfTPMs.SelectedIndex)
+            if (ListOfCommands.SelectedIndex < m_TPM12Commands.Length)
             {
-                case 0:
-                    // TPM 1.2
-                    commandCode = m_TPM12Commands[ListOfCommands.SelectedIndex].Ordinal;
-                    description = m_TPM12Commands[ListOfCommands.SelectedIndex].Description;
-                    break;
-
-                case 1:
-                    // TPM 2.0
-                    commandCode = m_TPM20Commands[ListOfCommands.SelectedIndex].Ordinal;
-                    description = m_TPM20Commands[ListOfCommands.SelectedIndex].Description;
-                    break;
+                // TPM 1.2
+                commandCode = m_TPM12Commands[ListOfCommands.SelectedIndex].Ordinal;
+                description = m_TPM12Commands[ListOfCommands.SelectedIndex].Description;
+            }
+            else if (ListOfCommands.SelectedIndex - m_TPM12Commands.Length < m_TPM20Commands.Length)
+            {
+                // TPM 2.0
+                commandCode = m_TPM20Commands[ListOfCommands.SelectedIndex - m_TPM12Commands.Length].Ordinal;
+                description = m_TPM20Commands[ListOfCommands.SelectedIndex - m_TPM12Commands.Length].Description;
             }
 
-            m_IgnoreNextChange = true;
+            CommandCode.TextChanged -= CommandCode_TextChanged;
             CommandCode.Text = string.Format("0x{0:x}", commandCode);
             Description.Text = description;
+            CommandCode.TextChanged += CommandCode_TextChanged;
         }
 
         #region Save and Restore state
@@ -3228,18 +3195,6 @@ namespace TpmRcDecoder
         /// session. The state will be null the first time a page is visited.</param>
         private void LoadState(object sender, LoadStateEventArgs e)
         {
-            if (SuspensionManager.SessionState.ContainsKey(m_SettingSelectedTPM))
-            {
-                int index;
-                if (System.Int32.TryParse((string)SuspensionManager.SessionState[m_SettingSelectedTPM], out index))
-                {
-                    if (index >= 0 && index < ListOfTPMs.Items.Count)
-                    {
-                        ListOfTPMs.SelectedIndex = index;
-                    }
-                }
-            }
-
             if (SuspensionManager.SessionState.ContainsKey(m_SettingCommandCode))
             {
                 CommandCode.Text = (string)SuspensionManager.SessionState[m_SettingCommandCode];
@@ -3258,7 +3213,6 @@ namespace TpmRcDecoder
         /// serializable state.</param>
         private void SaveState(object sender, SaveStateEventArgs e)
         {
-            SuspensionManager.SessionState[m_SettingSelectedTPM] = ListOfTPMs.SelectedIndex.ToString();
             SuspensionManager.SessionState[m_SettingCommandCode] = CommandCode.Text;
         }
 
