@@ -3047,6 +3047,49 @@ namespace TpmRcDecoder
                 "  This command allows a policy to be bound to the TPMA_NV_WRITTEN attributes. This is a deferred assertion. Values are stored in the policy session context and checked when the policy is used for authorization.\n" +
                 "\nReference:\n" +
                 "  TPM 2.0 Library Specification Revision 1.16, Part 3, Section 23.20" ),
+            new TPMCommandDescription( 0x00000190, "TPM2_PolicyTemplate", "Input:\n" +
+                "  templateHash - the digest to be added to the policy\n" +
+                "\nOutput:\n" +
+                "  None." +
+                "\nDescription:\n" +
+                "  This command allows a policy to be bound to a specific creation template. This is most useful for an object creation command such as TPM2_Create(), TPM2_CreatePrimary(), or TPM2_CreateLoaded()." +
+                "\nReference:\n" +
+                "  TPM 2.0 Library Specification Revision 1.38, Part 3, Section 23.21" ),
+            new TPMCommandDescription( 0x00000191, "TPM2_CreateLoaded", "Input:\n" +
+                "  parentHandle - Handle of a transient storage key, a persistent storage key, TPM_RH_ENDORSEMENT, TPM_RH_OWNER, TPM_RH_PLATFORM+{PP}, or TPM_RH_NULL Auth Index: 1 Auth Role: USER\n" +
+                "  inSensitive - the sensitive data, see TPM 2.0 Part 1 Sensitive Values\n" +
+                "  inPublic - the public template\n" +
+                "\nOutput:\n" +
+                "  outPrivate - the sensitive area of the object (optional)\n" +
+                "  outPublic - the public portion of the created object\n" +
+                "  name - the name of the created object\n" +
+                "\nDescription:\n" +
+                "  This command creates an object and loads it in the TPM. This command allows creation of any type of object (Primary, Ordinary, or Derived) depending on the type of parentHandle. If parentHandle references a Primary Seed, then a Primary Object is created; if parentHandle references a Storage Parent, then an Ordinary Object is created; and if parentHandle references a Derivation Parent, then a Derived Object is generated." +
+                "\nReference:\n" +
+                "  TPM 2.0 Library Specification Revision 1.38, Part 3, Section 12.9" ),
+            new TPMCommandDescription( 0x00000192, "TPM2_PolicyAuthorizeNV", "Input:\n" +
+                "  authHandle - handle indicating the source of the authorization value Auth Index: 1 Auth Role: USER\n" +
+                "  nvIndex - the NV Index of the area to read Auth Index: None\n" +
+                "  policySession - handle for the policy session being extended Auth Index: None\n" +
+                "\nOutput:\n" +
+                "  None.\n" +
+                "\nDescription:\n" +
+                "  This command provides a capability that is the equivalent of a revocable policy. With TPM2_PolicyAuthorize(), the authorization ticket never expires, so the authorization may not be withdrawn. With this command, the approved policy is kept in an NV Index location so that the policy may be changed as needed to render the old policy unusable.\n" +
+                "\nReference:\n" +
+                "  TPM 2.0 Library Specification Revision 1.38, Part 3, Section 23.22" ),
+            new TPMCommandDescription( 0x00000193, "TPM2_EncryptDecrypt2", "Input:\n" +
+                "  keyHandle - the symmetric key used for the operation Auth Index: 1 Auth Role: USER\n" +
+                "  inData - the data to be encrypted/decrypted\n" +
+                "  decrypt - if YES, then the operation is decryption; if NO, the operation is encryption\n" +
+                "  mode - symmetric mode this field shall match the default mode of the key or be TPM_ALG_NULL.\n" +
+                "  ivIn - an initial value as required by the algorithm\n" +
+                "\nOutput:\n" +
+                "  outData - encrypted or decrypted output\n" +
+                "  ivOut - chaining value to use for IV in next round\n" +
+                "\nDescription:\n" +
+                "  This command is identical to TPM2_EncryptDecrypt(), except that the inData parameter is the first parameter. This permits inData to be parameter encrypted.\n" +
+                "\nReference:\n" +
+                "  TPM 2.0 Library Specification Revision 1.38, Part 3, Section 15.3" ),
         };
 
         public class CommandDescriptionComparer : IComparer<TPMCommandDescription>
@@ -3086,27 +3129,26 @@ namespace TpmRcDecoder
 
         }
 
-        private void SetIndex(int index, string description)
+        private void SetIndex(int index, UInt32 commandCode, string commandName, string description)
         {
             bool setNotification = ListOfCommands.SelectedIndex != index;
             if (setNotification)
                 ListOfCommands.SelectionChanged -= ListOfCommands_SelectionChanged;
             ListOfCommands.SelectedIndex = index;
-            Description.Text = description;
+            Description.Text = string.Format("{0} (0x{1:x})\n\n", commandName, commandCode) + description;
             if (setNotification)
                 ListOfCommands.SelectionChanged += ListOfCommands_SelectionChanged;
         }
 
         private void CommandCode_TextChanged(object sender, TextChangedEventArgs e)
         {
-            string inStr = CommandCode.Text;
+            string inStr = CommandCode.Text.Trim();
             uint commandCode = ~0u;
-            if (inStr.Trim().StartsWith("0x", StringComparison.CurrentCultureIgnoreCase))
+            if (inStr.StartsWith("0x", StringComparison.CurrentCultureIgnoreCase))
             {
-                inStr = inStr.Trim().Substring(2);
                 try
                 {
-                    commandCode = UInt32.Parse(inStr, NumberStyles.HexNumber);
+                    commandCode = UInt32.Parse(inStr.Substring(2).Trim(), NumberStyles.HexNumber);
                 }
                 catch (FormatException)
                 { }
@@ -3115,14 +3157,14 @@ namespace TpmRcDecoder
             {
                 try
                 {
-                    commandCode = UInt32.Parse(CommandCode.Text.Trim(), NumberStyles.Integer);
+                    commandCode = UInt32.Parse(inStr, NumberStyles.Integer);
                 }
                 catch (FormatException)
                 { }
             }
             if (commandCode == ~0u)
             {
-                SetIndex(-1, m_InvalidCommandDescription);
+                SetIndex(-1, 0, "", m_InvalidCommandDescription);
                 return;
             }
 
@@ -3132,7 +3174,7 @@ namespace TpmRcDecoder
             {
                 if (commandCode == descr.Ordinal)
                 {
-                    SetIndex(index, descr.Description);
+                    SetIndex(index, descr.Ordinal, descr.Name, descr.Description);
                     return;
                 }
                 index++;
@@ -3142,14 +3184,14 @@ namespace TpmRcDecoder
             {
                 if (commandCode == descr.Ordinal)
                 {
-                    SetIndex(index, descr.Description);
+                    SetIndex(index, descr.Ordinal, descr.Name, descr.Description);
                     return;
                 }
                 index++;
             }
 
             // no matching command found, set defaults
-            SetIndex(-1, m_InvalidCommandDescription);
+            SetIndex(-1, 0, "", m_InvalidCommandDescription);
         }
 
         private void ListOfCommands_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -3161,22 +3203,25 @@ namespace TpmRcDecoder
 
             uint commandCode = ~0u;
             string description = "";
+            string commandName = "";
             if (ListOfCommands.SelectedIndex < m_TPM12Commands.Length)
             {
                 // TPM 1.2
                 commandCode = m_TPM12Commands[ListOfCommands.SelectedIndex].Ordinal;
                 description = m_TPM12Commands[ListOfCommands.SelectedIndex].Description;
+                commandName = m_TPM12Commands[ListOfCommands.SelectedIndex].Name;
             }
             else if (ListOfCommands.SelectedIndex - m_TPM12Commands.Length < m_TPM20Commands.Length)
             {
                 // TPM 2.0
                 commandCode = m_TPM20Commands[ListOfCommands.SelectedIndex - m_TPM12Commands.Length].Ordinal;
                 description = m_TPM20Commands[ListOfCommands.SelectedIndex - m_TPM12Commands.Length].Description;
+                commandName = m_TPM20Commands[ListOfCommands.SelectedIndex - m_TPM12Commands.Length].Name;
             }
 
             CommandCode.TextChanged -= CommandCode_TextChanged;
             CommandCode.Text = string.Format("0x{0:x}", commandCode);
-            Description.Text = description;
+            Description.Text = string.Format("{0} (0x{1:x})\n\n", commandName, commandCode) + description;
             CommandCode.TextChanged += CommandCode_TextChanged;
         }
 

@@ -33,10 +33,9 @@ namespace TpmRcDecoder
             uint input = ~0u;
             if (inStr.StartsWith("0x", StringComparison.CurrentCultureIgnoreCase))
             {
-                inStr = inStr.Substring(2);
                 try
                 {
-                    input = UInt32.Parse(inStr.Trim(), NumberStyles.HexNumber);
+                    input = UInt32.Parse(inStr.Substring(2).Trim(), NumberStyles.HexNumber);
                 }
                 catch (FormatException)
                 { }
@@ -60,19 +59,19 @@ namespace TpmRcDecoder
             Output.Text = decoder.Decode(string.Format("{0:x}", input));
         }
 
-        private void Decode_Click(object sender, RoutedEventArgs e)
-        {
-            GenerateOutput();
-        }
-
         private void MainPage_KeyDown(object sender, KeyRoutedEventArgs e)
         {
             switch (e.Key)
             {
                 case Windows.System.VirtualKey.Enter:
-                    Decode_Click(sender, e);
+                    Input_TextChanged(sender, null);
                     break;
             }
+        }
+
+        private void Input_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            GenerateOutput();
         }
 
         #region Save and Restore state

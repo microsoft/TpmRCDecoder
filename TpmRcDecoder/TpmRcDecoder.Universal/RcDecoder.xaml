@@ -54,14 +54,12 @@
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
                     <RowDefinition Height="*" MinHeight="250"/>
                 </Grid.RowDefinitions>
 
                 <TextBlock Grid.Row="0" Margin="20,10" HorizontalAlignment="Left" TextWrapping="Wrap" Text="Input TPM return code (in decimal or hexadecimal format):" />
-                <TextBox Grid.Row="1" x:Name="Input" Margin="20,10" TextAlignment="Right" VerticalAlignment="Top" HorizontalAlignment="Stretch" PlaceholderText="Input error code here" IsTextPredictionEnabled="False" AllowDrop="True" />
-                <Button Grid.Row="2" x:Name="Decode" Margin="20,10" Content="Decode" Click="Decode_Click" HorizontalContentAlignment="Center" HorizontalAlignment="Stretch" />
-                <TextBox Grid.Row="3" x:Name="Output" Margin="20,10" TextWrapping="Wrap" Text="Decoded Return Code description" VerticalAlignment="Stretch" IsReadOnly="True"/>
+                <TextBox Grid.Row="1" x:Name="Input" Margin="20,10" TextAlignment="Right" VerticalAlignment="Top" HorizontalAlignment="Stretch" PlaceholderText="Input error code here" IsTextPredictionEnabled="False" TextChanged="Input_TextChanged"  AllowDrop="True" />
+                <TextBox Grid.Row="2" x:Name="Output" Margin="20,10" TextWrapping="Wrap" Text="Decoded Return Code description" VerticalAlignment="Stretch" IsReadOnly="True"/>
             </Grid>
         </ScrollViewer>
     </Grid>
