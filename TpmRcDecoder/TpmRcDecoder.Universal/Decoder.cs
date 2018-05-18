@@ -259,7 +259,7 @@ namespace TpmRcDecoder
             TPM_RC_BAD_AUTH = 0x022, // authorization failure without DA implications
             TPM_RC_EXPIRED = 0x023, // the policy has expired
             TPM_RC_POLICY_CC = 0x024, // the commandCode in the policy is not the commandCode of the command
-            TPM_RC_BINDING = 0x025,
+            TPM_RC_BINDING = 0x025, // public and sensitive portion of an object are not cryptographically bound
             TPM_RC_CURVE = 0x026, // curve not supported
             TPM_RC_ECC_POINT = 0x27, // point is not on the required curve.
         };
@@ -268,7 +268,7 @@ namespace TpmRcDecoder
         {
             { TPM_RC_FMT_CODES.TPM_RC_ASYMMETRIC, "asymmetric algorithm not supported or not correct" },
             { TPM_RC_FMT_CODES.TPM_RC_ATTRIBUTES, "inconsistent attributes" },
-            { TPM_RC_FMT_CODES.TPM_RC_HASH, "hash algorithm not supported or not appropriate " },
+            { TPM_RC_FMT_CODES.TPM_RC_HASH, "hash algorithm not supported or not appropriate" },
             { TPM_RC_FMT_CODES.TPM_RC_VALUE, "value is out of range or is not correct for the context" },
             { TPM_RC_FMT_CODES.TPM_RC_HIERARCHY, "hierarchy is not enabled or is not correct for the use" },
             { TPM_RC_FMT_CODES.TPM_RC_KEY_SIZE, "key size is not supported" },
@@ -278,7 +278,7 @@ namespace TpmRcDecoder
             { TPM_RC_FMT_CODES.TPM_RC_HANDLE, "the handle is not correct for the use" },
             { TPM_RC_FMT_CODES.TPM_RC_KDF, "unsupported key derivation function or function not appropriate for use" },
             { TPM_RC_FMT_CODES.TPM_RC_RANGE, "value was out of allowed range." },
-            { TPM_RC_FMT_CODES.TPM_RC_AUTH_FAIL, "the authorization HMAC check failed and DA counter incremented " },
+            { TPM_RC_FMT_CODES.TPM_RC_AUTH_FAIL, "the authorization HMAC check failed and DA counter incremented" },
             { TPM_RC_FMT_CODES.TPM_RC_NONCE, "invalid nonce size" },
             { TPM_RC_FMT_CODES.TPM_RC_PP, "authorization requires assertion of PP" },
             { TPM_RC_FMT_CODES.TPM_RC_SCHEME, "unsupported or incompatible scheme" },
@@ -286,17 +286,17 @@ namespace TpmRcDecoder
             { TPM_RC_FMT_CODES.TPM_RC_SYMMETRIC, "unsupported symmetric algorithm or key size, or not appropriate for instance" },
             { TPM_RC_FMT_CODES.TPM_RC_TAG, "incorrect structure tag" },
             { TPM_RC_FMT_CODES.TPM_RC_SELECTOR, "union selector is incorrect" },
-            { TPM_RC_FMT_CODES.TPM_RC_INSUFFICIENT, "the TPM was unable to unmarshal a value because there were not enough bytes in the input buffer " },
+            { TPM_RC_FMT_CODES.TPM_RC_INSUFFICIENT, "the TPM was unable to unmarshal a value because there were not enough bytes in the input buffer" },
             { TPM_RC_FMT_CODES.TPM_RC_SIGNATURE, "the signature is not valid" },
             { TPM_RC_FMT_CODES.TPM_RC_KEY, "key fields are not compatible with each other" },
             { TPM_RC_FMT_CODES.TPM_RC_POLICY_FAIL, "a policy check failed" },
-            { TPM_RC_FMT_CODES.TPM_RC_INTEGRITY, "integrity check failed " },
-            { TPM_RC_FMT_CODES.TPM_RC_TICKET, "invalid ticket " },
+            { TPM_RC_FMT_CODES.TPM_RC_INTEGRITY, "integrity check failed" },
+            { TPM_RC_FMT_CODES.TPM_RC_TICKET, "invalid ticket" },
             { TPM_RC_FMT_CODES.TPM_RC_RESERVED_BITS, "reserved bits not set to zero as required" },
             { TPM_RC_FMT_CODES.TPM_RC_BAD_AUTH, "authorization failure without DA implications" },
             { TPM_RC_FMT_CODES.TPM_RC_EXPIRED, "the policy has expired" },
             { TPM_RC_FMT_CODES.TPM_RC_POLICY_CC, "the commandCode in the policy is not the commandCode of the command" },
-            { TPM_RC_FMT_CODES.TPM_RC_BINDING, "" },
+            { TPM_RC_FMT_CODES.TPM_RC_BINDING, "public and sensitive portion of an object are not cryptographically bound" },
             { TPM_RC_FMT_CODES.TPM_RC_CURVE, "curve not supported" },
             { TPM_RC_FMT_CODES.TPM_RC_ECC_POINT, "point is not on the required curve." },
         };
@@ -325,7 +325,7 @@ namespace TpmRcDecoder
 
             output += " Error: " + Enum.GetName(typeof(TPM_RC_FMT_CODES), input & TPM_RC_FMT_ERROR_MASK);
             string description;
-            if (TPM_RC_WARN_CODE_DESCRIPTION.TryGetValue((TPM_RC_WARN_CODES)input, out description))
+            if (TPM_RC_FMT_CODE_DESCRIPTION.TryGetValue((TPM_RC_FMT_CODES) (input & TPM_RC_FMT_ERROR_MASK), out description))
             {
                 output += "\n  Description: " + description;
             }
@@ -359,7 +359,7 @@ namespace TpmRcDecoder
             TPM_RC_REFERENCE_S4 = 0x01C, //	the 5th session handle references a session that is not loaded
             TPM_RC_REFERENCE_S5 = 0x01D, //	the 6th session handle references a session that is not loaded
             TPM_RC_REFERENCE_S6 = 0x01E, //	the 7th authorization session handle references a session that is not loaded
-            TPM_RC_NV_RATE = 0x020, //	the TPM is rate-limiting accesses to prevent wearout of NV
+            TPM_RC_NV_RATE = 0x020, //	the TPM is rate-limiting accesses to prevent wear-out of NV
             TPM_RC_LOCKOUT = 0x021, //	authorizations for objects subject to DA protection are not allowed at this time because the TPM is in DA lockout mode
             TPM_RC_RETRY = 0x022, //	the TPM was not able to start the command
             TPM_RC_NV_UNAVAILABLE = 0x023, //	the command may require writing of NV and NV is not current accessible
@@ -392,7 +392,7 @@ namespace TpmRcDecoder
             { TPM_RC_WARN_CODES.TPM_RC_REFERENCE_S4, "the 5th session handle references a session that is not loaded" },
             { TPM_RC_WARN_CODES.TPM_RC_REFERENCE_S5, "the 6th session handle references a session that is not loaded" },
             { TPM_RC_WARN_CODES.TPM_RC_REFERENCE_S6, "the 7th authorization session handle references a session that is not loaded" },
-            { TPM_RC_WARN_CODES.TPM_RC_NV_RATE, "the TPM is rate-limiting accesses to prevent wearout of NV" },
+            { TPM_RC_WARN_CODES.TPM_RC_NV_RATE, "the TPM is rate-limiting accesses to prevent wear-out of NV" },
             { TPM_RC_WARN_CODES.TPM_RC_LOCKOUT, "authorizations for objects subject to DA protection are not allowed at this time because the TPM is in DA lockout mode" },
             { TPM_RC_WARN_CODES.TPM_RC_RETRY, "the TPM was not able to start the command" },
             { TPM_RC_WARN_CODES.TPM_RC_NV_UNAVAILABLE, "the command may require writing of NV and NV is not current accessible" },
@@ -451,67 +451,66 @@ namespace TpmRcDecoder
             return output;
         }
 
-        enum TPM_RC_VER1_CODES
+        enum TPM_RC_VER1_CODES : UInt32
         {
-            TPM_RC_INITIALIZE = 0x000,      // TPM not initialized
-            TPM_RC_FAILURE = 0x001,         // commands not being accepted because of a TPM failure NOTE
-                                            // This may be returned by TPM2_GetTestResult() as the testResult parameter.
-            TPM_RC_SEQUENCE = 0x003,        // improper use of a sequence handle 
-            TPM_RC_PRIVATE = 0x00B,
-            TPM_RC_HMAC = 0x019,
-            TPM_RC_DISABLED = 0x020,
-            TPM_RC_EXCLUSIVE = 0x021,       // command failed because audit sequence required exclusivity
-            TPM_RC_ECC_CURVE = 0x023,       // unsupported curve
-            TPM_RC_AUTH_TYPE = 0x024,       // authorization handle is not correct for command
-            TPM_RC_AUTH_MISSING = 0x025,    // command requires an authorization session for handle and it is not present.
-            TPM_RC_POLICY = 0x026,          // policy Failure In Math Operation or an invalid authPolicy value
-            TPM_RC_PCR = 0x027,             // PCR check fail
-            TPM_RC_PCR_CHANGED = 0x028,     // PCR have changed since checked.
-            TPM_RC_ECC_POINT = 0x02C,       // point is not on the required curve.
-            TPM_RC_UPGRADE = 0x02D,         // for all commands other than TPM2_FieldUpgradeData(), this code 
-                                            // indicates that the TPM is in field upgrade mode; for TPM2_FieldUpgradeData(), 
-                                            // this code indicates that the TPM is not in field upgrade mode
-            TPM_RC_TOO_MANY_CONTEXTS = 0x02E,   // context ID counter is at maximum.
-            TPM_RC_AUTH_UNAVAILABLE = 0x02F,    // authValue or authPolicy is not available for selected entity.
-            TPM_RC_REBOOT = 0x030,          // a _TPM_Init and Startup(CLEAR) is required before the TPM can resume operation.
-            TPM_RC_UNBALANCED = 0x031,      // the protection algorithms (hash and symmetric) are not reasonably balanced.
-                                            // The digest size of the hash must be larger than the key size of the symmetric
-                                            // algorithm.
-            TPM_RC_COMMAND_SIZE = 0x042,    // command commandSize value is inconsistent with contents of the command buffer;
-                                            // either the size is not the same as the bytes loaded by the hardware interface 
-                                            // layer or the value is not large enough to hold a command header
-            TPM_RC_COMMAND_CODE = 0x043,    // command code not supported
-            TPM_RC_AUTHSIZE = 0x044,        // the value of authorzationSize is out of range or the number of bytes in the 
-                                            // authorization area is greater than required
-            TPM_RC_AUTH_CONTEXT = 0x045,    // use of an authorization session with a context command
-            TPM_RC_NV_RANGE = 0x046,        // NV offset+size is out of range.
-            TPM_RC_NV_SIZE = 0x047,         // Requested allocation size is larger than allowed.
-            TPM_RC_NV_LOCKED = 0x048,       // NV access locked.
-            TPM_RC_NV_AUTHORIZATION = 0x049,    // NV access authorization fails in command actions (this failure does not affect lockout.action)
-            TPM_RC_NV_UNINITIALIZED = 0x04A,    // an NV Index is used before being initialized or the state saved by TPM2_Shutdown(STATE) could not be restored
-            TPM_RC_NV_SPACE = 0x04B,        // insufficient space for NV allocation
-            TPM_RC_NV_DEFINED = 0x04C,      // nv index or persisted object already defined
-            TPM_RC_BAD_CONTEXT = 0x050,     // context in TPM2_ContextLoad() is not valid
-            TPM_RC_CPHASH = 0x051,          // cpHash value already set or not correct for use
-            TPM_RC_PARENT = 0x052,          // handle for parent is not a valid parent
-            TPM_RC_NEEDS_TEST = 0x053,      // some function needs testing.
-            TPM_RC_NO_RESULT = 0x054,       // returned when an internal function cannot process a request due to an 
-                                            // unspecified problem. This code is usually related to invalid parameters 
-                                            // that are not properly filtered by the input unmarshaling code.
-            TPM_RC_SENSITIVE = 0x055,       // the sensitive area did not unmarshal correctly after decryption – this code
-                                            // is used in lieu of the other unmarshaling errors so that an attacker cannot 
-                                            // determine where the unmarshaling error occurred
-            RC_MAX_FM0 = 0x07F,             // largest format 0 code that is not a warning
+            TPM_RC_INITIALIZE = TPM_RC_VER1 + 0x000,        // TPM not initialized by TPM2_Startup or already initialized
+            TPM_RC_FAILURE = TPM_RC_VER1 + 0x001,           // commands not being accepted because of a TPM failure NOTE
+                                                            // This may be returned by TPM2_GetTestResult() as the testResult parameter.
+            TPM_RC_SEQUENCE = TPM_RC_VER1 + 0x003,          // improper use of a sequence handle 
+            TPM_RC_PRIVATE = TPM_RC_VER1 + 0x00B,
+            TPM_RC_HMAC = TPM_RC_VER1 + 0x019,
+            TPM_RC_DISABLED = TPM_RC_VER1 + 0x020,          // the command is disabled
+            TPM_RC_EXCLUSIVE = TPM_RC_VER1 + 0x021,         // command failed because audit sequence required exclusivity
+            TPM_RC_ECC_CURVE = TPM_RC_VER1 + 0x023,         // unsupported curve
+            TPM_RC_AUTH_TYPE = TPM_RC_VER1 + 0x024,         // authorization handle is not correct for command
+            TPM_RC_AUTH_MISSING = TPM_RC_VER1 + 0x025,      // command requires an authorization session for handle and it is not present.
+            TPM_RC_POLICY = TPM_RC_VER1 + 0x026,            // policy Failure In Math Operation or an invalid authPolicy value
+            TPM_RC_PCR = TPM_RC_VER1 + 0x027,               // PCR check fail
+            TPM_RC_PCR_CHANGED = TPM_RC_VER1 + 0x028,       // PCR have changed since checked.
+            TPM_RC_UPGRADE = TPM_RC_VER1 + 0x02D,           // for all commands other than TPM2_FieldUpgradeData(), this code 
+                                                            // indicates that the TPM is in field upgrade mode; for TPM2_FieldUpgradeData(), 
+                                                            // this code indicates that the TPM is not in field upgrade mode
+            TPM_RC_TOO_MANY_CONTEXTS = TPM_RC_VER1 + 0x02E, // context ID counter is at maximum.
+            TPM_RC_AUTH_UNAVAILABLE = TPM_RC_VER1 + 0x02F,  // authValue or authPolicy is not available for selected entity.
+            TPM_RC_REBOOT = TPM_RC_VER1 + 0x030,            // a _TPM_Init and Startup(CLEAR) is required before the TPM can resume operation.
+            TPM_RC_UNBALANCED = TPM_RC_VER1 + 0x031,        // the protection algorithms (hash and symmetric) are not reasonably balanced.
+                                                            // The digest size of the hash must be larger than the key size of the symmetric
+                                                            // algorithm.
+            TPM_RC_COMMAND_SIZE = TPM_RC_VER1 + 0x042,      // command commandSize value is inconsistent with contents of the command buffer;
+                                                            // either the size is not the same as the bytes loaded by the hardware interface 
+                                                            // layer or the value is not large enough to hold a command header
+            TPM_RC_COMMAND_CODE = TPM_RC_VER1 + 0x043,      // command code not supported
+            TPM_RC_AUTHSIZE = TPM_RC_VER1 + 0x044,          // the value of authorzationSize is out of range or the number of bytes in the 
+                                                            // authorization area is greater than required
+            TPM_RC_AUTH_CONTEXT = TPM_RC_VER1 + 0x045,      // use of an authorization session with a context command
+            TPM_RC_NV_RANGE = TPM_RC_VER1 + 0x046,          // NV offset+size is out of range.
+            TPM_RC_NV_SIZE = TPM_RC_VER1 + 0x047,           // Requested allocation size is larger than allowed.
+            TPM_RC_NV_LOCKED = TPM_RC_VER1 + 0x048,         // NV access locked.
+            TPM_RC_NV_AUTHORIZATION = TPM_RC_VER1 + 0x049,  // NV access authorization fails in command actions (this failure does not affect lockout.action)
+            TPM_RC_NV_UNINITIALIZED = TPM_RC_VER1 + 0x04A,  // an NV Index is used before being initialized or the state saved by TPM2_Shutdown(STATE) could not be restored
+            TPM_RC_NV_SPACE = TPM_RC_VER1 + 0x04B,          // insufficient space for NV allocation
+            TPM_RC_NV_DEFINED = TPM_RC_VER1 + 0x04C,        // NV index or persisted object already defined
+            TPM_RC_BAD_CONTEXT = TPM_RC_VER1 + 0x050,       // context in TPM2_ContextLoad() is not valid
+            TPM_RC_CPHASH = TPM_RC_VER1 + 0x051,            // cpHash value already set or not correct for use
+            TPM_RC_PARENT = TPM_RC_VER1 + 0x052,            // handle for parent is not a valid parent
+            TPM_RC_NEEDS_TEST = TPM_RC_VER1 + 0x053,        // some function needs testing.
+            TPM_RC_NO_RESULT = TPM_RC_VER1 + 0x054,         // returned when an internal function cannot process a request due to an 
+                                                            // unspecified problem. This code is usually related to invalid parameters 
+                                                            // that are not properly filtered by the input unmarshaling code.
+            TPM_RC_SENSITIVE = TPM_RC_VER1 + 0x055,         // the sensitive area did not unmarshal correctly after decryption – this code
+                                                            // is used in lieu of the other unmarshaling errors so that an attacker cannot 
+                                                            // determine where the unmarshaling error occurred
+            RC_MAX_FM0 = TPM_RC_VER1 + 0x07F,               // largest format 0 code that is not a warning
         };
 
         private static readonly Dictionary<TPM_RC_VER1_CODES, string> TPM_RC_VER1_CODE_DESCRIPTION = new Dictionary<TPM_RC_VER1_CODES, string>
         {
-            { TPM_RC_VER1_CODES.TPM_RC_INITIALIZE, "TPM not initialized" },
+            { TPM_RC_VER1_CODES.TPM_RC_INITIALIZE, "TPM not initialized by TPM2_Startup or already initialized" },
             { TPM_RC_VER1_CODES.TPM_RC_FAILURE, "commands not being accepted because of a TPM failure NOTE This may be returned by TPM2_GetTestResult() as the testResult parameter." },
             { TPM_RC_VER1_CODES.TPM_RC_SEQUENCE, "improper use of a sequence handle" },
             { TPM_RC_VER1_CODES.TPM_RC_PRIVATE, "" },
             { TPM_RC_VER1_CODES.TPM_RC_HMAC, "" },
-            { TPM_RC_VER1_CODES.TPM_RC_DISABLED, "" },
+            { TPM_RC_VER1_CODES.TPM_RC_DISABLED, "the command is disabled" },
             { TPM_RC_VER1_CODES.TPM_RC_EXCLUSIVE, "command failed because audit sequence required exclusivity" },
             { TPM_RC_VER1_CODES.TPM_RC_ECC_CURVE, "unsupported curve" },
             { TPM_RC_VER1_CODES.TPM_RC_AUTH_TYPE, "authorization handle is not correct for command" },
@@ -535,7 +534,7 @@ namespace TpmRcDecoder
             { TPM_RC_VER1_CODES.TPM_RC_NV_AUTHORIZATION, "NV access authorization fails in command actions (this failure does not affect lockout.action)" },
             { TPM_RC_VER1_CODES.TPM_RC_NV_UNINITIALIZED, "an NV Index is used before being initialized or the state saved by TPM2_Shutdown(STATE) could not be restored" },
             { TPM_RC_VER1_CODES.TPM_RC_NV_SPACE, "insufficient space for NV allocation" },
-            { TPM_RC_VER1_CODES.TPM_RC_NV_DEFINED, "nv index or persisted object already defined" },
+            { TPM_RC_VER1_CODES.TPM_RC_NV_DEFINED, "NV index or persisted object already defined" },
             { TPM_RC_VER1_CODES.TPM_RC_BAD_CONTEXT, "context in TPM2_ContextLoad() is not valid" },
             { TPM_RC_VER1_CODES.TPM_RC_CPHASH, "cpHash value already set or not correct for use" },
             { TPM_RC_VER1_CODES.TPM_RC_PARENT, "handle for parent is not a valid parent" },
@@ -652,7 +651,7 @@ namespace TpmRcDecoder
             { TPM_12_ERROR_CODES.TPM_AUTHFAIL, "Authentication failed" },
             { TPM_12_ERROR_CODES.TPM_BADINDEX, "The index to a PCR, DIR or other register is incorrect" },
             { TPM_12_ERROR_CODES.TPM_BAD_PARAMETER, "One or more parameter is bad" },
-            { TPM_12_ERROR_CODES.TPM_AUDITFAILURE, "An operation completed successfully but the auditing of that operation failed. " },
+            { TPM_12_ERROR_CODES.TPM_AUDITFAILURE, "An operation completed successfully but the auditing of that operation failed." },
             { TPM_12_ERROR_CODES.TPM_CLEAR_DISABLED, "The clear disable flag is set and all clear operations now require physical access" },
             { TPM_12_ERROR_CODES.TPM_DEACTIVATED, "The TPM is deactivated" },
             { TPM_12_ERROR_CODES.TPM_DISABLED, "The TPM is disabled" },
@@ -665,8 +664,8 @@ namespace TpmRcDecoder
             { TPM_12_ERROR_CODES.TPM_INAPPROPRIATE_ENC, "Unacceptable encryption scheme" },
             { TPM_12_ERROR_CODES.TPM_MIGRATEFAIL, "Migration authorization failed" },
             { TPM_12_ERROR_CODES.TPM_INVALID_PCR_INFO, "PCR information could not be interpreted" },
-            { TPM_12_ERROR_CODES.TPM_NOSPACE, "No room to load key. " },
-            { TPM_12_ERROR_CODES.TPM_NOSRK, "There is no SRK set.  This is an appropriate response when an unowned TPM receives a command that requires a TPM owner. " },
+            { TPM_12_ERROR_CODES.TPM_NOSPACE, "No room to load key." },
+            { TPM_12_ERROR_CODES.TPM_NOSRK, "There is no SRK set.  This is an appropriate response when an unowned TPM receives a command that requires a TPM owner." },
             { TPM_12_ERROR_CODES.TPM_NOTSEALED_BLOB, "An encrypted blob is invalid or was not created by this TPM" },
             { TPM_12_ERROR_CODES.TPM_OWNER_SET, "There is already an Owner" },
             { TPM_12_ERROR_CODES.TPM_RESOURCES, "The TPM has insufficient internal resources to perform the requested action." },
@@ -675,13 +674,13 @@ namespace TpmRcDecoder
             { TPM_12_ERROR_CODES.TPM_WRONGPCRVAL, "The named PCR value does not match the current PCR value." },
             { TPM_12_ERROR_CODES.TPM_BAD_PARAM_SIZE, "The paramSize argument to the command has the incorrect value" },
             { TPM_12_ERROR_CODES.TPM_SHA_THREAD, "There is no existing SHA-1 thread." },
-            { TPM_12_ERROR_CODES.TPM_SHA_ERROR, "The calculation is unable to proceed because the existing SHA-1 thread has already encountered an error. " },
-            { TPM_12_ERROR_CODES.TPM_FAILEDSELFTEST, "Self-test has failed and the TPM has shutdown. " },
+            { TPM_12_ERROR_CODES.TPM_SHA_ERROR, "The calculation is unable to proceed because the existing SHA-1 thread has already encountered an error." },
+            { TPM_12_ERROR_CODES.TPM_FAILEDSELFTEST, "Self-test has failed and the TPM has shutdown." },
             { TPM_12_ERROR_CODES.TPM_AUTH2FAIL, "The authorization for the second key in a 2 key function failed authorization" },
             { TPM_12_ERROR_CODES.TPM_BADTAG, "The tag value sent to for a command is invalid" },
             { TPM_12_ERROR_CODES.TPM_IOERROR, "An IO error occurred transmitting information to the TPM" },
-            { TPM_12_ERROR_CODES.TPM_ENCRYPT_ERROR, "The encryption process had a problem. " },
-            { TPM_12_ERROR_CODES.TPM_DECRYPT_ERROR, "The decryption process did not complete. " },
+            { TPM_12_ERROR_CODES.TPM_ENCRYPT_ERROR, "The encryption process had a problem." },
+            { TPM_12_ERROR_CODES.TPM_DECRYPT_ERROR, "The decryption process did not complete." },
             { TPM_12_ERROR_CODES.TPM_INVALID_AUTHHANDLE, "An invalid handle was used." },
             { TPM_12_ERROR_CODES.TPM_NO_ENDORSEMENT, "The TPM does not have a EK installed" },
             { TPM_12_ERROR_CODES.TPM_INVALID_KEYUSAGE, "The usage of a key is not allowed" },
@@ -733,7 +732,7 @@ namespace TpmRcDecoder
             { TPM_12_ERROR_CODES.TPM_DAA_INPUT_DATA1, "The consistency check on DAA parameter inputData1 has failed." },
             { TPM_12_ERROR_CODES.TPM_DAA_ISSUER_SETTINGS, "The consistency check on DAA_issuerSettings has failed." },
             { TPM_12_ERROR_CODES.TPM_DAA_TPM_SETTINGS, "The consistency check on DAA_tpmSpecific has failed." },
-            { TPM_12_ERROR_CODES.TPM_DAA_STAGE, "The atomic process indicated by the submitted DAA command is not the expected process. " },
+            { TPM_12_ERROR_CODES.TPM_DAA_STAGE, "The atomic process indicated by the submitted DAA command is not the expected process." },
             { TPM_12_ERROR_CODES.TPM_DAA_ISSUER_VALIDITY, "The issuer’s validity check has detected an inconsistency" },
             { TPM_12_ERROR_CODES.TPM_DAA_WRONG_W, "The consistency check on w has failed." },
             { TPM_12_ERROR_CODES.TPM_BAD_HANDLE, "The handle is incorrect" },
@@ -752,6 +751,10 @@ namespace TpmRcDecoder
         private string DecodeError(UInt32 input)
         {
             UInt32 error = input & TPM_RC_ERROR_MASK;
+            if ((input & TPM_RC_VER1) == TPM_RC_VER1)
+            {
+                error += TPM_RC_VER1;
+            }
 
             string output = string.Format("TPM Error (0x{0:x}):", input);
 
@@ -1186,7 +1189,7 @@ namespace TpmRcDecoder
             { 0x80280039, "The operation requires a signed command." },
             { 0x8028003A, "Wrong operation to load an NV key." },
             { 0x8028003B, "NV_LoadKey blob requires both owner and blob authorization." },
-            { 0x8028003C, "The NV area is locked and not writtable." },
+            { 0x8028003C, "The NV area is locked and not writable." },
             { 0x8028003D, "The locality is incorrect for the attempted operation." },
             { 0x8028003E, "The NV area is read only and can't be written to." },
             { 0x8028003F, "There is no protection on the write to the NV area." },
@@ -1206,7 +1209,7 @@ namespace TpmRcDecoder
             { 0x8028004D, "Delegation table management not enabled." },
             { 0x8028004E, "There was a command executed outside of an exclusive transport session." },
             { 0x8028004F, "Attempt to context save a owner evict controlled key." },
-            { 0x80280050, "The DAA command has no resources availble to execute the command." },
+            { 0x80280050, "The DAA command has no resources available to execute the command." },
             { 0x80280051, "The consistency check on DAA parameter inputData0 has failed." },
             { 0x80280052, "The consistency check on DAA parameter inputData1 has failed." },
             { 0x80280053, "The consistency check on DAA_issuerSettings has failed." },
@@ -1232,7 +1235,7 @@ namespace TpmRcDecoder
             { 0x80280404, "The command within the transport is not supported." },
             { 0x80280800, "The TPM is too busy to respond to the command immediately, but the command could be resubmitted at a later time." },
             { 0x80280801, "SelfTestFull has not been run." },
-            { 0x80280802, "The TPM is currently executing a full selftest." },
+            { 0x80280802, "The TPM is currently executing a full self-test." },
             { 0x80280803, "The TPM is defending against dictionary attacks and is in a time-out period." },
             { 0x80284001, "An internal software error has been detected." },
             { 0x80284002, "One or more input parameters is bad." },
