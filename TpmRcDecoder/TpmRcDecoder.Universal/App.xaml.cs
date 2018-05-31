@@ -19,8 +19,6 @@ namespace TpmRcDecoder
     /// </summary>
     sealed partial class App : Application
     {
-        private Frame rootFrame;
-
         /// <summary>
         /// Initializes the singleton application object.  This is the first line of authored code
         /// executed, and as such is the logical equivalent of main() or WinMain().
@@ -115,74 +113,6 @@ namespace TpmRcDecoder
             }
 
             EnsureRootFrame(e.PreviousExecutionState, e.Arguments);
-
-            /* no voice controls for now
-            // The app must install its command sets at least once. Doing this in OnLaunched 
-            // causes it to happen as infrequently as possible. 
-            try
-            {
-                var storageFile = await Package.Current.InstalledLocation.GetFileAsync(@"VoiceCommands.xml");
-                await Windows.ApplicationModel.VoiceCommands.VoiceCommandDefinitionManager.
-                    InstallCommandDefinitionsFromStorageFileAsync(storageFile);
-            }
-            catch (Exception ex)
-            {
-                System.Diagnostics.Debug.WriteLine("Installing Voice Commands Failed: " + ex.ToString());
-            }
-            */
-
-            // dynamically update phrase list will all possible TPM error codes
-            /*
-            Windows.ApplicationModel.VoiceCommands.VoiceCommnadDefinition.VoiceCommandSet commandSetEnUs;
-
-            if (Windows.ApplicationModel.VoiceCommands.VoiceCommandDefinitionManager.
-                    InstalledCommandSets.TryGetValue(
-                    "AdventureWorksCommandSet_en-us", out commandSetEnUs))
-            {
-                await commandSetEnUs.SetPhraseListAsync(
-                "destination", new string[] {“London”, “Dallas”, “New York”, “Phoenix”});
-            }
-            */
-        }
-
-        // <summary> 
-        // Invoked when the application is activated.
-        // </summary> 
-        // <param name = "e" > Details about the launch request and process.</param> 
-        protected override void OnActivated(IActivatedEventArgs args)
-        {
-            if (args.Kind != ActivationKind.VoiceCommand)
-            {
-                return;
-            }
-
-            var commandArgs = args as VoiceCommandActivatedEventArgs;
-            SpeechRecognitionResult speechRecognitionResult = commandArgs.Result;
-
-            // The commandMode is either "voice" or "text", and it indicates how the voice command was entered by the user. 
-            // We should respect "text" mode by providing feedback in a silent form. 
-            string commandMode = this.SemanticInterpretation("commandMode", speechRecognitionResult);
-
-            string voiceCommand = speechRecognitionResult.RulePath[0];
-            string textSpoken = speechRecognitionResult.Text;
-
-            switch (voiceCommand)
-            {
-                case "decodeReturnCode":
-                    textSpoken = SemanticInterpretation("errorCodeSearch", speechRecognitionResult);
-                    // nothing
-                    break;
-
-                default:
-                    textSpoken = "";
-                    break;
-            }
-
-            EnsureRootFrame(args.PreviousExecutionState, "");
-            if (!this.rootFrame.Navigate(typeof(RcDecoder), textSpoken))
-            {
-                throw new Exception("Failed to create voice command page");
-            }
         }
 
         private string SemanticInterpretation(string interpretationKey, SpeechRecognitionResult speechRecognitionResult)
