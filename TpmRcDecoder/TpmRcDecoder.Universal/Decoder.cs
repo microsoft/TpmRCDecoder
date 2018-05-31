@@ -461,7 +461,6 @@ namespace TpmRcDecoder
             TPM_RC_HMAC = TPM_RC_VER1 + 0x019,
             TPM_RC_DISABLED = TPM_RC_VER1 + 0x020,          // the command is disabled
             TPM_RC_EXCLUSIVE = TPM_RC_VER1 + 0x021,         // command failed because audit sequence required exclusivity
-            TPM_RC_ECC_CURVE = TPM_RC_VER1 + 0x023,         // unsupported curve
             TPM_RC_AUTH_TYPE = TPM_RC_VER1 + 0x024,         // authorization handle is not correct for command
             TPM_RC_AUTH_MISSING = TPM_RC_VER1 + 0x025,      // command requires an authorization session for handle and it is not present.
             TPM_RC_POLICY = TPM_RC_VER1 + 0x026,            // policy Failure In Math Operation or an invalid authPolicy value
@@ -512,13 +511,11 @@ namespace TpmRcDecoder
             { TPM_RC_VER1_CODES.TPM_RC_HMAC, "" },
             { TPM_RC_VER1_CODES.TPM_RC_DISABLED, "the command is disabled" },
             { TPM_RC_VER1_CODES.TPM_RC_EXCLUSIVE, "command failed because audit sequence required exclusivity" },
-            { TPM_RC_VER1_CODES.TPM_RC_ECC_CURVE, "unsupported curve" },
             { TPM_RC_VER1_CODES.TPM_RC_AUTH_TYPE, "authorization handle is not correct for command" },
             { TPM_RC_VER1_CODES.TPM_RC_AUTH_MISSING, "command requires an authorization session for handle and it is not present." },
             { TPM_RC_VER1_CODES.TPM_RC_POLICY, "policy Failure In Math Operation or an invalid authPolicy value" },
             { TPM_RC_VER1_CODES.TPM_RC_PCR, "PCR check fail" },
             { TPM_RC_VER1_CODES.TPM_RC_PCR_CHANGED, "PCR have changed since checked." },
-            { TPM_RC_VER1_CODES.TPM_RC_ECC_POINT, "point is not on the required curve." },
             { TPM_RC_VER1_CODES.TPM_RC_UPGRADE, "for all commands other than TPM2_FieldUpgradeData(), this code indicates that the TPM is in field upgrade mode; for TPM2_FieldUpgradeData(), this code indicates that the TPM is not in field upgrade mode" },
             { TPM_RC_VER1_CODES.TPM_RC_TOO_MANY_CONTEXTS, "context ID counter is at maximum." },
             { TPM_RC_VER1_CODES.TPM_RC_AUTH_UNAVAILABLE, "authValue or authPolicy is not available for selected entity." },
