@@ -16,13 +16,16 @@
     <MinimumVisualStudioVersion>14</MinimumVisualStudioVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{A5A43C5B-DE2A-4C0C-9213-0A381AF9435A};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
-    <PackageCertificateKeyFile>TpmRcDecoder.Universal_StoreKey.pfx</PackageCertificateKeyFile>
+    <PackageCertificateKeyFile>TpmRcDecoder_TemporaryKey.pfx</PackageCertificateKeyFile>
     <AppxAutoIncrementPackageRevision>True</AppxAutoIncrementPackageRevision>
     <AppxBundle>Always</AppxBundle>
     <AppxBundlePlatforms>x86|x64|arm</AppxBundlePlatforms>
-    <PackageCertificateThumbprint>C325E9F7E940607E0D6B5FD291C2B3B70E75AEFB</PackageCertificateThumbprint>
+    <PackageCertificateThumbprint>4D08BA00DA9369BD707E5FED7B8D0BF0DB1ECDF7</PackageCertificateThumbprint>
     <HockeyAppResourceId>760c48098bf84f1e98760be5bf0b9fd0</HockeyAppResourceId>
     <RuntimeIdentifiers>win10-arm;win10-arm-aot;win10-x86;win10-x86-aot;win10-x64;win10-x64-aot</RuntimeIdentifiers>
+    <GenerateAppInstallerFile>False</GenerateAppInstallerFile>
+    <AppInstallerUpdateFrequency>1</AppInstallerUpdateFrequency>
+    <AppInstallerCheckForUpdateFrequency>OnApplicationRun</AppInstallerCheckForUpdateFrequency>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
     <DebugSymbols>true</DebugSymbols>
@@ -164,6 +167,7 @@
     </AppxManifest>
     <None Include="TpmRcDecoder.Universal_StoreKey.pfx" />
     <None Include="TpmRcDecoder.Universal_TemporaryKey.pfx" />
+    <None Include="TpmRcDecoder_TemporaryKey.pfx" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Package.StoreAssociation.xml" />
