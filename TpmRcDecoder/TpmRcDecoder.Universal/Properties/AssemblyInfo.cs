@@ -8,9 +8,9 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("TpmRcDecoder")]
 [assembly: AssemblyDescription("TPM Return Code Decoder")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Microsoft Research")]
+[assembly: AssemblyCompany("Microsoft Corp.")]
 [assembly: AssemblyProduct("TpmRcDecoder")]
-[assembly: AssemblyCopyright("Copyright ©  2016")]
+[assembly: AssemblyCopyright("Copyright ©  2016-2018")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
