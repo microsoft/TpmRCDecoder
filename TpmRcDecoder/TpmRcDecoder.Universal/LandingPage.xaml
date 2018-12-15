@@ -55,6 +55,9 @@
                 <TextBlock Style="{StaticResource SubtitleTextBlockStyle}">TPM Command Codes</TextBlock>
                 <TextBlock Style="{StaticResource BodyTextBlockStyle}" Margin="0,4">A dictionary of TPM 1.2 and TPM 2.0 commands including a short description.</TextBlock>
 
+                <TextBlock Style="{StaticResource SubtitleTextBlockStyle}">TPM Manufacturer Codes</TextBlock>
+                <TextBlock Style="{StaticResource BodyTextBlockStyle}" Margin="0,4">A dictionary of TPM manufacturers.</TextBlock>
+
             </StackPanel>
         </ScrollViewer>
 

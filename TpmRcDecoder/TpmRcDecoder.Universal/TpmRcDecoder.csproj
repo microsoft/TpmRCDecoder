@@ -146,6 +146,9 @@
     <Compile Include="LandingPage.xaml.cs">
       <DependentUpon>LandingPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Manufacturers.xaml.cs">
+      <DependentUpon>Manufacturers.xaml</DependentUpon>
+    </Compile>
     <Compile Include="RcDecoder.xaml.cs">
       <DependentUpon>RcDecoder.xaml</DependentUpon>
     </Compile>
@@ -195,6 +198,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="LandingPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Manufacturers.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

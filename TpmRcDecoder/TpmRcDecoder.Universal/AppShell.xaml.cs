@@ -37,6 +37,12 @@ namespace TpmRcDecoder
                 },
                 new NavMenuItem()
                 {
+                    Symbol = Symbol.Contact,
+                    Label = "TPM Manufacturers",
+                    DestPage = typeof(Manufacturers)
+                },
+                new NavMenuItem()
+                {
                     Symbol = Symbol.Setting,
                     Label = "Settings",
                     DestPage = typeof(Settings)
