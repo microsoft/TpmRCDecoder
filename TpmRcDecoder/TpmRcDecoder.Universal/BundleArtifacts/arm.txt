@@ -1,6 +1,6 @@
-MainPackage=C:\Users\raigner\Source\Repos\TpmRCDecoder\TpmRcDecoder\TpmRcDecoder.Universal\bin\ARM\Release\TpmRcDecoder_1.7.5.0_ARM.appx
-SymbolPackage=C:\Users\raigner\Source\Repos\TpmRCDecoder\TpmRcDecoder\TpmRcDecoder.Universal\AppPackages\TpmRcDecoder_1.7.5.0_Test\TpmRcDecoder_1.7.5.0_ARM.appxsym
-ResourcePack=C:\Users\raigner\Source\Repos\TpmRCDecoder\TpmRcDecoder\TpmRcDecoder.Universal\bin\ARM\Release\TpmRcDecoder_1.7.5.0_scale-100.appx
-ResourcePack=C:\Users\raigner\Source\Repos\TpmRCDecoder\TpmRcDecoder\TpmRcDecoder.Universal\bin\ARM\Release\TpmRcDecoder_1.7.5.0_scale-125.appx
-ResourcePack=C:\Users\raigner\Source\Repos\TpmRCDecoder\TpmRcDecoder\TpmRcDecoder.Universal\bin\ARM\Release\TpmRcDecoder_1.7.5.0_scale-150.appx
-ResourcePack=C:\Users\raigner\Source\Repos\TpmRCDecoder\TpmRcDecoder\TpmRcDecoder.Universal\bin\ARM\Release\TpmRcDecoder_1.7.5.0_scale-400.appx
+MainPackage=C:\Users\raigner\source\repos\TpmRCDecoder\TpmRcDecoder\TpmRcDecoder.Universal\bin\ARM\Release\TpmRcDecoder_1.8.9.0_ARM.appx
+SymbolPackage=C:\Users\raigner\source\repos\TpmRCDecoder\TpmRcDecoder\TpmRcDecoder.Universal\obj\ARM\Release\Symbols\TpmRcDecoder_1.8.9.0_ARM.appxsym
+ResourcePack=C:\Users\raigner\source\repos\TpmRCDecoder\TpmRcDecoder\TpmRcDecoder.Universal\bin\ARM\Release\TpmRcDecoder_1.8.9.0_scale-100.appx
+ResourcePack=C:\Users\raigner\source\repos\TpmRCDecoder\TpmRcDecoder\TpmRcDecoder.Universal\bin\ARM\Release\TpmRcDecoder_1.8.9.0_scale-125.appx
+ResourcePack=C:\Users\raigner\source\repos\TpmRCDecoder\TpmRcDecoder\TpmRcDecoder.Universal\bin\ARM\Release\TpmRcDecoder_1.8.9.0_scale-150.appx
+ResourcePack=C:\Users\raigner\source\repos\TpmRCDecoder\TpmRcDecoder\TpmRcDecoder.Universal\bin\ARM\Release\TpmRcDecoder_1.8.9.0_scale-400.appx

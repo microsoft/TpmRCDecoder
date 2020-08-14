@@ -3090,6 +3090,87 @@ namespace TpmRcDecoder
                 "  This command is identical to TPM2_EncryptDecrypt(), except that the inData parameter is the first parameter. This permits inData to be parameter encrypted.\n" +
                 "\nReference:\n" +
                 "  TPM 2.0 Library Specification Revision 1.38, Part 3, Section 15.3" ),
+            new TPMCommandDescription( 0x00000194, "TPM2_AC_GetCapability", "Input:\n" +
+                "  ac - handle indicating the Attached Component. Auth Index: None\n" +
+                "  capability - starting info type\n" +
+                "  count - maximum number of values to return\n" +
+                "\nOutput:\n" +
+                "  moreData - flag to indicate whether there are more values\n" +
+                "  capabilitiesData - list of capabilities\n" +
+                "\nDescription:\n" +
+                "  The purpose of this command is to obtain information about an Attached Component referenced by an AC handle.\n" +
+                "\nReference:\n" +
+                "  TPM 2.0 Library Specification Revision 1.62, Part 3, Section 31.2" ),
+            new TPMCommandDescription( 0x00000195, "TPM2_AC_Send", "Input:\n" +
+                "  sendObject - handle of the object being sent to ac. Auth Index: 1. Auth Role: DUP\n" +
+                "  authHandle - the handle indicating the source of the authorization value. Auth Index: 2. Auth Role: USER\n" +
+                "  ac - handle indicating the Attached Component to which the object will be sent. Auth Index: None\n" +
+                "  acDataIn - Optional non sensitive information related to the object\n" +
+                "\nOutput:\n" +
+                "  acDataOut - May include AC specific data or information about an error.\n" +
+                "\nDescription:\n" +
+                "  The purpose of this command is to send (copy) a loaded object from the TPM to an Attached Component.\n" +
+                "\nReference:\n" +
+                "  TPM 2.0 Library Specification Revision 1.62, Part 3, Section 31.3" ),
+            new TPMCommandDescription( 0x00000196, "TPM2_Policy_AC_SendSelect", "Input:\n" +
+                "  policySession - handle for the policy session being extended. Auth Index: None\n" +
+                "  objectName - the Name of the Object to be sent\n" +
+                "  authHandleName - the Name associated with authHandle used in the TPM2_AC_Send() command\n" +
+                "  acName - the Name of the Attached Component to which the Object will be sent\n" +
+                "  includeObject - if SET, objectName will be included in the value in policySession→policyDigest\n" +
+                "\nOutput:\n" +
+                "  None.\n" +
+                "\nDescription:\n" +
+                "  This command allows qualification of the sending (copying) of an Object to an Attached Component (AC). Qualification includes selection of the receiving AC and the method of authentication for the AC, and, in certain circumstances, the Object to be sent may be specified.\n" +
+                "\nReference:\n" +
+                "  TPM 2.0 Library Specification Revision 1.62, Part 3, Section 31.4" ),
+            new TPMCommandDescription( 0x00000197, "TPM2_CertifyX509", "Input:\n" +
+                "  objectHandle - handle of the object to be certified. Auth Index: 1. Auth Role: ADMIN\n" +
+                "  signHandle - handle of the key used to sign the attestation structure. Auth Index: 2. Auth Role: USER\n" +
+                "  reserved - shall be an Empty Buffer\n" +
+                "  inScheme - signing scheme to use if the scheme for signHandle is TPM_ALG_NULL\n" +
+                "  partialCertificate - a DER encoded partial certificate\n" +
+                "\nOutput:\n" +
+                "  addedToCertificate - a DER encoded SEQUENCE containing the DER encoded fields added to partialCertificate to make it a complete RFC5280 TBSCertificate.\n" +
+                "  tbsDigest - the digest that was signed\n" +
+                "  signature - The signature over tbsDigest\n" +
+                "\nDescription:\n" +
+                "  The purpose of this command is to generate an X.509 certificate that proves an object with a specific public key and attributes is loaded in the TPM. In contrast to TPM2_Certify, which uses a TCG-defined data structure to convey attestation information, TPM2_CertifyX509 encodes the attestation information in a DER-encoded X.509 certificate that is compliant with RFC5280 Internet X.509 Public Key Infrastructure Certificate and Certificate Revocation List (CRL) Profile.\n" +
+                "\nReference:\n" +
+                "  TPM 2.0 Library Specification Revision 1.62, Part 3, Section 17.8" ),
+            new TPMCommandDescription( 0x00000198, "TPM2_ACT_SetTimeout", "Input:\n" +
+                "  actHandle - Handle of the selected ACT. Auth Index: 1. Auth Role: USER\n" +
+                "  startTimeout - the start timeout value for the ACT in seconds\n" +
+                "\nOutput:\n" +
+                "  None.\n" +
+                "\nDescription:\n" +
+                "  This command is used to set the time remaining before an Authenticated Countdown Timer (ACT) expires.\n" +
+                "\nReference:\n" +
+                "  TPM 2.0 Library Specification Revision 1.62, Part 3, Section 33.2" ),
+            new TPMCommandDescription( 0x00000199, "TPM2_ECC_Encrypt", "Input:\n" +
+                "  keyHandle - Reference to public portion of ECC key to use for encryption. Auth Index: None\n" +
+                "  plainText - Plaintext to be encrypted.\n" +
+                "  inScheme - the KDF to use if scheme associated with keyHandle is TPM_ALG_NULL.\n" +
+                "\nOutput:\n" +
+                "  C1 - the public ephemeral key used for ECDH\n" +
+                "  C2 - the data block produced by the XOR process\n" +
+                "  C3 - the integrity value\n" +
+                "\nDescription:\n" +
+                "  This command performs ECC encryption as described in Part 1, Annex D.\n" +
+                "\nReference:\n" +
+                "  TPM 2.0 Library Specification Revision 1.62, Part 3, Section 14.8" ),
+            new TPMCommandDescription( 0x0000019a, "TPM2_ECC_Decrypt", "Input:\n" +
+                "  keyHandle - ECC key to use for decryption. Auth Index: 1. Auth Role: USER\n" +
+                "  C1 - the public ephemeral key used for ECDH\n" +
+                "  C2 - the data block produced by the XOR process\n" +
+                "  C3 - the integrity value\n" +
+                "  inScheme - the KDF to use if scheme associated with keyHandle is TPM_ALG_NULL\n" +
+                "\nOutput:\n" +
+                "  plainText - decrypted output.\n" +
+                "\nDescription:\n" +
+                "  This command performs ECC decryption.\n" +
+                "\nReference:\n" +
+                "  TPM 2.0 Library Specification Revision 1.59, Part 3, Section 14.9" ),
         };
 
         public class CommandDescriptionComparer : IComparer<TPMCommandDescription>
